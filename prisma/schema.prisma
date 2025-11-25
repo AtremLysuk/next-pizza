@@ -1,0 +1,606 @@
+// // generator client {
+// //   provider = "prisma-client-js"
+// // }
+
+// // datasource db {
+// //   provider = "postgresql"
+// //   url      = env("POSTGRES_URL")
+// // }
+
+// // model User {
+// //   id Int @id @default(autoincrement())
+
+// //   fullName String
+// //   email String @unique
+// //   password String
+// //   role UserRole @default(USER)
+// //   verified DateTime
+
+
+// //   provider String?
+// //   providerId String?
+
+// //   cart Cart?
+// //   orders Order[]
+// //   verificationCode VerificationCode?
+
+// //   createdAt DateTime @default(now())
+// //   updatedAt DateTime @updatedAt
+// // }
+
+// // model Category {
+// //   id Int @id @default(autoincrement())
+// //   name String @unique
+// //   products Product[]
+
+// //   createdAt DateTime @default(now())
+// //   updatedAt DateTime @updatedAt
+// // }
+
+// // model Product {
+// //   id Int @id @default(autoincrement())
+
+// //   name String
+// //   imageUrl String
+
+// //   ingridients Ingridient[]
+// //   items ProductItem[]
+
+// //   category Category @relation(fields: [categoryId], references: [id])
+// //   categoryId Int
+
+// //   createdAt DateTime @default(now())
+// //   updatedAt DateTime @updatedAt
+// // }
+
+// // model ProductItem {
+// //    id Int @id @default(autoincrement())
+
+// //    price Int
+// //    size Int?
+// //    pizzaType Int?
+
+// //   cartItems CartItem[]
+
+// //    product Product @relation(fields: [productId], references: [id])
+
+// //    productId Int
+// // }
+
+// // model Ingridient {
+// //   id Int @id @default(autoincrement())
+
+// //   name String
+// //   price Int
+// //   imageUrl String
+
+// //   products Product[] 
+// //   cartItems CartItem[]
+
+// //   createdAt DateTime @default(now())
+// //   updatedAt DateTime @updatedAt
+// // }
+
+// // model Cart {
+// //   id Int @id @default(autoincrement())
+
+// //   user   User? @relation(fields: [userId], references: [id])
+// //   userId Int? @unique
+
+// //   items CartItem[]
+
+// //   token String
+
+// //   totalAmount Int @default(0)
+
+// //   createdAt DateTime @default(now())
+// //   updatedAt DateTime @updatedAt
+// // }
+
+// // model CartItem {
+// //     id Int @id @default(autoincrement())
+
+
+
+// //     cart Cart @relation(fields: [cartId], references: [id])
+// //     cartId Int
+
+// //     productItem ProductItem @relation(fields: [productItemId], references: [id])
+// //     productItemId Int
+
+// //     quantity Int
+
+// //     ingredients Ingridient[]
+
+// //     createdAt DateTime @default(now())
+// //     updatedAt DateTime @updatedAt
+// // }
+
+// // model Order {
+// //   id Int @id @default(autoincrement())
+
+// //   user User? @relation(fields: [userId], references: [id])
+// //   userId Int?
+
+// //   token String
+
+// //   totalAmount Int
+// //   status OrderStatus
+// //   paymentId String?
+
+// //   items Json
+
+// //   fullName String
+// //   address String
+// //   email String
+// //   phone String
+// //   comment String?
+
+// //   createdAt DateTime @default(now())
+// //   updatedAt DateTime @updatedAt
+// // }
+
+// // model VerificationCode {
+// //   id Int @id @default(autoincrement())
+
+// //   user   User @relation(fields: [userId], references: [id])
+// //   userId Int @unique
+
+// //   code String @unique
+
+// //   createdAt DateTime @default(now())
+
+// //   @@unique([userId, code])
+// // }
+
+// // enum OrderStatus {
+// //   PENDING
+// //   SUCCEEDED
+// //   CANCELED
+// // }
+
+// // enum UserRole {
+// //   USER
+// //   ADMIN
+// // }
+
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+
+//     provider = "postgresql"
+//     url      = env("POSTGRES_URL")
+// }
+
+// model User {
+//   id       Int    @id @default(autoincrement())
+//   fullName String
+//   email    String @unique
+
+//   role         UserRole          @default(USER)
+//   orders       Order[]
+//   cartItems    CartItem[]
+//   cart         Cart?
+//   verification VerificationCode?
+
+//   phoneVerified DateTime?
+//   createdAt     DateTime  @default(now())
+// }
+
+// model Category {
+//     id     Int    @id @default(autoincrement())
+//     name String @unique
+//     products Product[]
+
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+// }
+
+// // model Product {
+// //   id       Int     @id @default(autoincrement())
+// //   name     String
+// //   imageUrl String
+// //   active   Boolean @default(false)
+
+// //   categories Category[]
+
+// //   pizzas Pizza[]
+
+// //   createdAt DateTime @default(now())
+// //   updatedAt DateTime @updatedAt
+// // }
+
+// model Pizza {
+//   id Int @id @default(autoincrement())
+
+//   price    Int
+//   size     Int
+//   type     Int
+//   carbs    Int
+//   fats     Int
+//   kcal     Int
+//   proteins Int
+//   weight   Int
+
+//   ingredients Ingredient[]
+
+
+//   productId Int
+//   product   Product @relation(fields: [productId], references: [id])
+
+//   active    Boolean  @default(false)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Ingredient {
+//   id Int @id @default(autoincrement())
+
+//   name String
+//   price Int
+//   imageUrl String
+
+//   products Product[] 
+//   cartItems CartItem[]
+//   pizzas Pizza[]
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Product {
+//   id Int @id @default(autoincrement())
+
+//   name String
+//   imageUrl String
+
+//   ingredients Ingredient[]
+//   items ProductItem[]
+//   pizzas Pizza[]
+
+//   category Category @relation(fields: [categoryId], references: [id])
+//   categoryId Int
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+// model ProductItem {
+//    id Int @id @default(autoincrement())
+
+//    price Int
+//    size Int?
+//    pizzaType Int?
+
+//   cartItems CartItem[]
+
+//    product Product @relation(fields: [productId], references: [id])
+
+//    productId Int
+// }
+
+// model Cart {
+//   id Int @id @default(autoincrement())
+
+//   userId Int?  @unique
+//   user   User? @relation(fields: [userId], references: [id])
+
+//   totalAmount Int @default(0)
+
+//   items  CartItem[]
+//   orders Order[]
+
+//   token String
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+
+// model CartItem {
+//   id Int @id @default(autoincrement())
+
+//   cartId Int
+//   cart   Cart @relation(fields: [cartId], references: [id])
+
+//   productItem ProductItem @relation(fields: [productItemId], references: [id])
+//   productItemId Int
+
+//   userId Int?
+//   user   User? @relation(fields: [userId], references: [id])
+
+//   ingredients Ingredient[]
+
+//   quantity Int @default(1)
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Order {
+//   id Int @id @default(autoincrement())
+
+//   userId Int?
+//   user   User? @relation(fields: [userId], references: [id])
+
+//   cartId Int
+//   cart   Cart @relation(fields: [cartId], references: [id])
+
+//   status      OrderStatus @default(PENDING)
+//   totalAmount Int
+//   paymentId   String?
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model VerificationCode {
+//   id Int @id @default(autoincrement())
+
+//   userId Int  @unique
+//   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   code String
+
+//   expiresAt DateTime @default(now())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@unique([userId, code])
+// }
+
+// enum OrderStatus {
+//   PENDING
+//   SUCCEEDED
+//   CANCELLED
+// }
+
+// enum UserRole {
+//   USER
+//   ADMIN
+// }
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+
+/* ===================== USERS ===================== */
+
+model User {
+  id         Int    @id @default(autoincrement())
+  fullName   String
+  email      String @unique
+  role       UserRole @default(USER)
+
+  cartItems  CartItem[]
+  cart       Cart?
+  orders     Order[]
+  verification VerificationCode?
+
+  phoneVerified DateTime?
+  createdAt     DateTime @default(now())
+}
+
+
+/* ===================== CATEGORY ===================== */
+
+model Category {
+  id        Int @id @default(autoincrement())
+  name      String @unique
+
+  products  Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+/* ===================== PRODUCT ===================== */
+
+model Product {
+  id         Int @id @default(autoincrement())
+  name       String
+  imageUrl   String
+
+  ingredients Ingredient[] @relation("ProductIngredients")
+  items        ProductItem[]
+  pizzas       Pizza[]
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+/* ===================== INGREDIENT ===================== */
+
+model Ingredient {
+  id         Int @id @default(autoincrement())
+  name       String
+  price      Int
+  imageUrl   String
+
+  /* many-to-many with Product */
+  products Product[] @relation("ProductIngredients")
+
+  /* many-to-many with CartItem */
+  cartItems CartItem[]
+
+  /* many-to-many with Pizza */
+  pizzas Pizza[] @relation("PizzaIngredients")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+/* ===================== PRODUCT ITEM ===================== */
+
+model ProductItem {
+  id        Int @id @default(autoincrement())
+  price     Int
+  size      Int?
+  pizzaType Int?
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  cartItems CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+/* ===================== PIZZA ===================== */
+
+model Pizza {
+  id Int @id @default(autoincrement())
+
+  price    Int
+  size     Int
+  type     Int
+  carbs    Int
+  fats     Int
+  kcal     Int
+  proteins Int
+  weight   Int
+
+  ingredients Ingredient[] @relation("PizzaIngredients")
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+
+  active    Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+/* ===================== CART ===================== */
+
+model Cart {
+  id     Int @id @default(autoincrement())
+
+  userId Int? @unique
+  user   User? @relation(fields: [userId], references: [id])
+
+  totalAmount Int @default(0)
+  token       String
+
+  items  CartItem[]
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+/* ===================== CART ITEM ===================== */
+
+model CartItem {
+  id Int @id @default(autoincrement())
+
+  cartId Int
+  cart   Cart @relation(fields: [cartId], references: [id])
+
+  productItemId Int
+  productItem   ProductItem @relation(fields: [productItemId], references: [id])
+
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id])
+
+  ingredients Ingredient[]
+
+  quantity Int @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+/* ===================== ORDER ===================== */
+
+// model Order {
+//   id Int @id @default(autoincrement())
+
+//   userId Int?
+//   user   User? @relation(fields: [userId], references: [id])
+
+//   cartId Int
+//   cart   Cart @relation(fields: [cartId], references: [id])
+
+//   status      OrderStatus @default(PENDING)
+//   totalAmount Int
+//   paymentId   String?
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id])
+
+  cartId Int
+  cart   Cart @relation(fields: [cartId], references: [id])
+
+  fullName String
+  email    String
+  phone    String
+  address  String
+  comment  String?
+  token    String
+
+  status      OrderStatus @default(PENDING)
+  totalAmount Int
+  paymentId   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+/* ===================== VERIFICATION CODE ===================== */
+
+model VerificationCode {
+  id Int @id @default(autoincrement())
+
+  userId Int @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  code      String
+  expiresAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, code])
+}
+
+
+/* ===================== ENUMS ===================== */
+
+enum OrderStatus {
+  PENDING
+  SUCCEEDED
+  CANCELLED
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
