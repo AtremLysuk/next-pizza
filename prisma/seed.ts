@@ -1,6 +1,7 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 
 import { categories, ingredients, products } from './constants';
+import { hashSync } from 'bcrypt';
 
 const randomNumber = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min) + min);
@@ -31,13 +32,15 @@ async function up() {
       {
         fullName: 'User',
         email: 'user@ttt.gmail.com',
-        phoneVerified: new Date(),
+        password: hashSync('1111', 10),
+        verified: new Date(),
         role: 'USER',
       },
       {
         fullName: 'Admin',
         email: 'admin@ttt.gmail.com',
-        phoneVerified: new Date(),
+        password: hashSync('2222', 10),
+        verified: new Date(),
         role: 'ADMIN',
       },
     ],
@@ -147,7 +150,6 @@ async function up() {
 
   await prisma.cartItem.create({
     data: {
-      userId: 1,
       productItemId: 1,
       cartId: 1,
       quantity: 2,

@@ -4,7 +4,7 @@ export interface GetSearchParams {
   sortBy?: string;
   sizes?: string;
   pizzaTypes?: string;
-  ingredients: string;
+  ingredients?: string;
   priceFrom?: string;
   priceTo?: string;
 }
@@ -13,9 +13,15 @@ const DEFAULT_MIN_PRICE = 0;
 const DEFAULT_MAX_PRICE = 1000;
 
 export const findPizzas = async (params: GetSearchParams) => {
-  const sizes = params.sizes?.split(',').map(Number);
-  const pizzaTypes = params.pizzaTypes?.split(',').map(Number);
-  const ingredientsIdArr = params.ingredients?.split(',').map(Number);
+  const sizes = params.sizes?.length
+    ? params.sizes?.split(',').map(Number)
+    : undefined;
+  const pizzaTypes = params.pizzaTypes?.length
+    ? params.pizzaTypes?.split(',').map(Number)
+    : undefined;
+  const ingredientsIdArr = params.ingredients?.length
+    ? params.ingredients?.split(',').map(Number)
+    : undefined;
 
   const minPrice = Number(params.priceFrom) || DEFAULT_MIN_PRICE;
   const maxPrice = Number(params.priceTo) || DEFAULT_MAX_PRICE;

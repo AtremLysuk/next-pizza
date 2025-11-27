@@ -1,6 +1,6 @@
 'use client';
 import { CheckoutSidebar, Container, Title } from '@/components/shared';
-import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCart } from '@/hooks';
 import {
@@ -10,10 +10,13 @@ import {
   checkoutFormSchema,
 } from '@/components/shared/checkout';
 import { TCheckoutFormValues } from '@/components/shared/checkout/checkout-form-schema';
-import { cn } from '@/lib/utils';
 import { createOrder } from '@/app/actions';
+import toast from 'react-hot-toast';
+import { useState } from 'react';
 
 export default function CheckoutPage() {
+  const [submiting, setSubmiting] = useState(false);
+
   const { totalAmount, updateItemQuantity, items, removeCartItem, loading } =
     useCart();
 
@@ -29,11 +32,26 @@ export default function CheckoutPage() {
     },
   });
 
-  const onSubmit: SubmitHandler<TCheckoutFormValues> = (data) => {
-    console.log(data);
-    createOrder(data);
-  };
+  const onSubmit = async (data: TCheckoutFormValues) => {
+    try {
+      setSubmiting(true);
+      console.log('Submit');
+      const result = await createOrder(data);
 
+      if (result?.url) {
+        window.location.href = result.url;
+      }
+      toast.success('Заказ успешно оформлен! 📝 Переход на оплату... ', {
+        icon: '✅',
+      });
+    } catch (error) {
+      console.log(error);
+      setSubmiting(false);
+      toast.error('не удалось создать заказ', {
+        icon: '❌',
+      });
+    }
+  };
   const onClickCountButton = (
     id: number,
     quantity: number,
@@ -62,16 +80,19 @@ export default function CheckoutPage() {
               />
 
               <CheckoutPersonalInfo
-                className={loading ? 'opacity-30 pointer-none' : ''}
+                className={loading ? 'opacity-30 pointer-events-none' : ''}
               />
 
               <CheckoutAddressForm
-                className={loading ? 'opacity-30 pointer-none' : ''}
+                className={loading ? 'opacity-30 pointer-events-none' : ''}
               />
             </div>
 
             <div className="w-[450px]">
-              <CheckoutSidebar totalAmount={totalAmount} loading={loading} />
+              <CheckoutSidebar
+                totalAmount={totalAmount}
+                loading={loading || submiting}
+              />
             </div>
           </div>
         </form>

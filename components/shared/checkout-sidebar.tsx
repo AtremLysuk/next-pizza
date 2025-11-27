@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import React from 'react';
 import { WhiteBlock } from './white-block';
 import { CheckoutItemDetails } from './checkout-item-details';
@@ -79,6 +78,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ totalAmount, loading }) => {
       <Button
         type="submit"
         className="w-full h-14 rounded-2xl mt-6 text-base font-bold"
+        loading={loading}
       >
         Перейти к оплате
         <ArrowRight className="w-5 ml-2" />
