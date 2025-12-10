@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
-import { RequiredSymbol } from '../required-symbol';
-import { cn } from '@/lib/utils';
-import { useFormContext } from 'react-hook-form';
-import { ErrorText } from '../error-text';
-import { ClearButton } from '../clear-button';
-import { Textarea } from '@/components/ui';
+"use client";
+import React, { FC } from "react";
+import { RequiredSymbol } from "../required-symbol";
+import { cn } from "@/lib/utils";
+import { useFormContext } from "react-hook-form";
+import { ErrorText } from "../error-text";
+import { ClearButton } from "../clear-button";
+import { Textarea } from "@/components/ui";
 
 interface Props extends React.InputHTMLAttributes<HTMLTextAreaElement> {
   name: string;
@@ -31,7 +32,7 @@ export const FormTextarea: FC<Props> = ({
   const errorText = errors[name]?.message;
 
   const onClickClear = () => {
-    setValue(name, '', { shouldValidate: true });
+    setValue(name, "", { shouldValidate: true });
   };
 
   return (

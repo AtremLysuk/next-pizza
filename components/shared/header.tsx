@@ -1,12 +1,18 @@
-import { cn } from '@/lib/utils';
-import { Container } from './container';
-import { FC } from 'react';
-import Image from 'next/image';
-import { Button } from '../ui/button';
-import { User } from 'lucide-react';
-import Link from 'next/link';
-import { SearchInput } from './search-input';
-import { CartButton } from './cart-button';
+"use client";
+
+import { cn } from "@/lib/utils";
+import { Container } from "./container";
+import { FC, useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { SearchInput } from "./search-input";
+import { CartButton } from "./cart-button";
+import { useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
+import { ProfileButton } from "./profile-button";
+import { AuthModal } from "./modals/auth-modal";
+import { useRouter } from "next/navigation";
 
 interface Props {
   hasSearch?: boolean;
@@ -19,8 +25,33 @@ export const Header: FC<Props> = ({
   hasSearch = true,
   hasCart = true,
 }) => {
+  const router = useRouter();
+  const [openAuthModal, setOpenAuthModal] = useState(false);
+
+  const searchParams = useSearchParams();
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    let toastMessage = "";
+    if (searchParams.has("paid")) {
+      toastMessage = "Заказ успешно оплачен! Информация отправлена на почту.";
+    }
+    if (searchParams.has("verified")) {
+      toastMessage = "Почта успешно подтверждена!  ";
+    }
+
+    if (toastMessage) {
+      setTimeout(() => {
+        router.replace("/");
+        toast.success(toastMessage, {
+          duration: 1000,
+        });
+      }, 500);
+    }
+  }, []);
+
   return (
-    <header className={cn(' border-b', className)}>
+    <header className={cn(" border-b", className)}>
       <Container className="flex items-center justify-between py-8">
         <Link href="/">
           <div className="flex items-center gap-4">
@@ -41,10 +72,11 @@ export const Header: FC<Props> = ({
         )}
 
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="flex items-center gap-1">
-            <User size={16} />
-            Войти
-          </Button>
+          <AuthModal
+            open={openAuthModal}
+            onClose={() => setOpenAuthModal(false)}
+          />
+          <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
           {hasCart && <CartButton />}
         </div>
       </Container>

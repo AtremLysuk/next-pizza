@@ -1,7 +1,7 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma } from "@prisma/client";
 
-import { categories, ingredients, products } from './constants';
-import { hashSync } from 'bcrypt';
+import { categories, ingredients, products } from "./constants";
+import { hashSync } from "bcrypt";
 
 const randomNumber = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min) + min);
@@ -30,18 +30,18 @@ async function up() {
   await prisma.user.createMany({
     data: [
       {
-        fullName: 'User',
-        email: 'user@ttt.gmail.com',
-        password: hashSync('1111', 10),
+        fullName: "User",
+        email: "user@ttt.gmail.com",
+        password: hashSync("1111", 10),
         verified: new Date(),
-        role: 'USER',
+        role: "USER",
       },
       {
-        fullName: 'Admin',
-        email: 'admin@ttt.gmail.com',
-        password: hashSync('2222', 10),
+        fullName: "Admin",
+        email: "admin@ttt.gmail.com",
+        password: hashSync("2222", 10),
         verified: new Date(),
-        role: 'ADMIN',
+        role: "ADMIN",
       },
     ],
   });
@@ -60,8 +60,8 @@ async function up() {
 
   const pizza1 = await prisma.product.create({
     data: {
-      name: 'Пепперони фреш',
-      imageUrl: 'pizzas/diablo2.png',
+      name: "Пепперони фреш",
+      imageUrl: "pizzas/diablo2.png",
       categoryId: 1,
       ingredients: {
         connect: ingredients.slice(0, 5),
@@ -71,8 +71,8 @@ async function up() {
 
   const pizza2 = await prisma.product.create({
     data: {
-      name: 'Сырная',
-      imageUrl: 'pizzas/cheesburger2.png',
+      name: "Сырная",
+      imageUrl: "pizzas/cheesburger2.png",
       categoryId: 1,
       ingredients: {
         connect: ingredients.slice(5, 10),
@@ -82,8 +82,8 @@ async function up() {
 
   const pizza3 = await prisma.product.create({
     data: {
-      name: 'Диабло',
-      imageUrl: 'pizzas/chicken.png',
+      name: "Диабло",
+      imageUrl: "pizzas/chicken.png",
       categoryId: 1,
       ingredients: {
         connect: ingredients.slice(10, 40),
@@ -138,12 +138,12 @@ async function up() {
       {
         userId: 1,
         totalAmount: 0,
-        token: '1111',
+        token: "1111",
       },
       {
         userId: 2,
         totalAmount: 0,
-        token: '2222',
+        token: "2222",
       },
     ],
   });
@@ -157,6 +157,58 @@ async function up() {
         connect: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }],
       },
     },
+  });
+
+  await prisma.story.createMany({
+    data: [
+      {
+        previewImageUrl: "/assets/images/stories/story-1.webp",
+      },
+      {
+        previewImageUrl: "/assets/images/stories/story-2.webp",
+      },
+      {
+        previewImageUrl: "/assets/images/stories/story-1.webp",
+      },
+      {
+        previewImageUrl: "/assets/images/stories/story-2.webp",
+      },
+      {
+        previewImageUrl: "/assets/images/stories/story-1.webp",
+      },
+      {
+        previewImageUrl: "/assets/images/stories/story-2.webp",
+      },
+    ],
+  });
+
+  await prisma.storyItem.createMany({
+    data: [
+      {
+        storyId: 1,
+        sourceUrl: "/assets/images/stories/story-1.webp",
+      },
+      {
+        storyId: 2,
+        sourceUrl: "/assets/images/stories/story-2.webp",
+      },
+      {
+        storyId: 3,
+        sourceUrl: "/assets/images/stories/story-1.webp",
+      },
+      {
+        storyId: 4,
+        sourceUrl: "/assets/images/stories/story-2.webp",
+      },
+      {
+        storyId: 5,
+        sourceUrl: "/assets/images/stories/story-1.webp",
+      },
+      {
+        storyId: 6,
+        sourceUrl: "/assets/images/stories/story-2.webp",
+      },
+    ],
   });
 }
 

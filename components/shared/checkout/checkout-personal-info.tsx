@@ -1,6 +1,6 @@
-import { FC } from 'react';
-import { WhiteBlock } from '../white-block';
-import { FormInput } from '../form-components';
+import { FC } from "react";
+import { WhiteBlock } from "../white-block";
+import { FormInput } from "../form-components";
 
 interface Props {
   className?: string;

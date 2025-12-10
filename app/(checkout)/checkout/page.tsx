@@ -1,18 +1,20 @@
-'use client';
-import { CheckoutSidebar, Container, Title } from '@/components/shared';
-import { useForm, FormProvider } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useCart } from '@/hooks';
+"use client";
+import { CheckoutSidebar, Container, Title } from "@/components/shared";
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useCart } from "@/hooks";
 import {
   CheckoutAddressForm,
   CheckoutCart,
   CheckoutPersonalInfo,
   checkoutFormSchema,
-} from '@/components/shared/checkout';
-import { TCheckoutFormValues } from '@/components/shared/checkout/checkout-form-schema';
-import { createOrder } from '@/app/actions';
-import toast from 'react-hot-toast';
-import { useState } from 'react';
+} from "@/components/shared/checkout";
+import { TCheckoutFormValues } from "@/components/shared/checkout/checkout-form-schema";
+import { createOrder } from "@/app/actions";
+import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { Api } from "@/services/api-clien";
 
 export default function CheckoutPage() {
   const [submiting, setSubmiting] = useState(false);
@@ -20,44 +22,60 @@ export default function CheckoutPage() {
   const { totalAmount, updateItemQuantity, items, removeCartItem, loading } =
     useCart();
 
+  const { data: session } = useSession();
+
   const form = useForm<TCheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
     defaultValues: {
-      email: '',
-      firstName: '',
-      lastName: '',
-      phone: '',
-      address: '',
-      comment: '',
+      email: "",
+      firstName: "",
+      lastName: "",
+      phone: "",
+      address: "",
+      comment: "",
     },
   });
+
+  useEffect(() => {
+    async function fetchUserInfo() {
+      const data = await Api.auth.getMe();
+      const [firstName, lastName] = data.fullName.split(" ");
+
+      form.setValue("firstName", firstName);
+      form.setValue("lastName", lastName);
+      form.setValue("email", data.email);
+    }
+    if (session) {
+      fetchUserInfo();
+    }
+  }, [session]);
 
   const onSubmit = async (data: TCheckoutFormValues) => {
     try {
       setSubmiting(true);
-      console.log('Submit');
+      console.log("Submit");
       const result = await createOrder(data);
 
       if (result?.url) {
         window.location.href = result.url;
       }
-      toast.success('Заказ успешно оформлен! 📝 Переход на оплату... ', {
-        icon: '✅',
+      toast.success("Заказ успешно оформлен! 📝 Переход на оплату... ", {
+        icon: "✅",
       });
     } catch (error) {
       console.log(error);
-      setSubmiting(false);
-      toast.error('не удалось создать заказ', {
-        icon: '❌',
+      // setSubmiting(false);
+      toast.error("не удалось создать заказ", {
+        icon: "❌",
       });
     }
   };
   const onClickCountButton = (
     id: number,
     quantity: number,
-    type: 'plus' | 'minus'
+    type: "plus" | "minus"
   ) => {
-    const newQuantity = type === 'plus' ? quantity + 1 : quantity - 1;
+    const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
     updateItemQuantity(id, newQuantity);
   };
 
@@ -80,23 +98,23 @@ export default function CheckoutPage() {
               />
 
               <CheckoutPersonalInfo
-                className={loading ? 'opacity-30 pointer-events-none' : ''}
+                className={loading ? "opacity-30 pointer-events-none" : ""}
               />
 
               <CheckoutAddressForm
-                className={loading ? 'opacity-30 pointer-events-none' : ''}
+                className={loading ? "opacity-30 pointer-events-none" : ""}
               />
             </div>
 
             <div className="w-[450px]">
-              <CheckoutSidebar
-                totalAmount={totalAmount}
-                loading={loading || submiting}
-              />
+              <CheckoutSidebar totalAmount={totalAmount} loading={loading} />
             </div>
           </div>
         </form>
       </FormProvider>
     </Container>
   );
+}
+function fetchUserInf() {
+  throw new Error("Function not implemented.");
 }

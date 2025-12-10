@@ -1,6 +1,7 @@
-import { FC } from 'react';
-import { WhiteBlock } from '../white-block';
-import { FormInput, FormTextarea } from '../form-components';
+"use client";
+import { FC } from "react";
+import { WhiteBlock } from "../white-block";
+import { FormInput, FormTextarea } from "../form-components";
 
 interface Props {
   className?: string;

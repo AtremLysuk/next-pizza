@@ -7,6 +7,7 @@ import { Button, Skeleton } from '../ui';
 interface Props {
   totalAmount: number;
   loading: boolean;
+  submiting?: boolean;
 }
 
 const VAT = 15;

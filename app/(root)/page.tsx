@@ -2,11 +2,12 @@ import {
   Container,
   Filters,
   ProductsGroupList,
+  Stories,
   Title,
-} from '@/components/shared';
-import { TopBar } from '@/components/shared/top-bar';
-import { findPizzas, GetSearchParams } from '@/lib/find-pizzas';
-import { Suspense } from 'react';
+} from "@/components/shared";
+import { TopBar } from "@/components/shared/top-bar";
+import { findPizzas, GetSearchParams } from "@/lib/find-pizzas";
+import { Suspense } from "react";
 
 export default async function Home({
   searchParams,
@@ -26,6 +27,8 @@ export default async function Home({
           (category) => category.products.length > 0
         )}
       />
+
+      <Stories />
 
       <Container className="pb-14">
         <div className="flex gap-[60px]">
