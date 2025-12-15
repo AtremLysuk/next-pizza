@@ -177,9 +177,9 @@ model StoryItem {
 
 
 enum OrderStatus {
-  PENDING
-  SUCCEEDED
-  CANCELLED
+  PENDING      // заказ создан, ждем оплату
+  PAID         // платеж подтвержден (webhook)
+  CANCELLED    // отменен
 }
 
 enum UserRole {

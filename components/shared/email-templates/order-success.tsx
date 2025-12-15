@@ -1,5 +1,5 @@
-import { CartItemDTO } from '@/services/dto/cart.dto';
-import { FC } from 'react';
+import { CartItemDTO } from "@/services/dto/cart.dto";
+import { FC } from "react";
 
 interface Props {
   orderId: number;

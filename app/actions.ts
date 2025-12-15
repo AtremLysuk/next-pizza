@@ -1,7 +1,6 @@
 "use server";
 
 import { PayOrderTemplate } from "@/components/shared";
-// re_Zdu6RavQ_3wxhqcCBd8jEDab2a3bnnhvX
 
 import { TCheckoutFormValues } from "@/components/shared/checkout/checkout-form-schema";
 import { createPayment, sendEmail } from "@/lib";
@@ -11,6 +10,10 @@ import { OrderStatus, Prisma } from "@prisma/client";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
 import { VerificationUserTemplate } from "@/components/shared/email-templates/verification-user";
+import { OrderSuccessTemplate } from "@/components/shared/email-templates/order-success";
+import { paymentRequiredTemplate } from "@/components/shared/email-templates/my-paylink-mail";
+import { mySemdMail } from "@/lib/my-send-mail";
+import { createWayForPayPayment } from "@/lib/wayforpay";
 
 export async function createOrder(data: TCheckoutFormValues) {
   try {
@@ -41,7 +44,7 @@ export async function createOrder(data: TCheckoutFormValues) {
       },
     });
 
-    if (!userCart) {
+    if (!userCart || userCart.totalAmount === 0) {
       throw new Error("Cart not found");
     }
 
@@ -63,64 +66,93 @@ export async function createOrder(data: TCheckoutFormValues) {
       },
     });
 
-    await prisma.cart.update({
-      where: {
-        id: userCart.id,
-      },
-      data: {
-        totalAmount: 0,
-      },
-    });
-
-    await prisma.cartItem.deleteMany({
-      where: {
-        cartId: userCart.id,
-      },
-    });
-
-    const paymentData = await createPayment({
-      amount: order.totalAmount,
+    const paymentUrl = await createWayForPayPayment({
       orderId: order.id,
-      decription: "Оплата заказа #" + order.id,
+      amount: order.totalAmount,
+      email: order.email,
     });
 
-    if (!paymentData) {
-      throw new Error("Payment not found");
-    }
+    // await prisma.order.update({
+    //   where: {
+    //     id: order.id,
+    //   },
+    //   data: {
+    //     paymentId: String(order.id),
+    //   },
+    // });
 
-    await prisma.order.update({
-      where: {
-        id: order.id,
-      },
-      data: {
-        paymentId: paymentData.id,
-      },
-    });
+    // fix payment
+    // ========================
+    // const paymentData = await createPayment({
+    //   amount: order.totalAmount,
+    //   orderId: order.id,
+    //   decription: "Оплата заказа #" + order.id,
+    // });
 
-    const paymentUrl = paymentData.confirmation.confirmation_url;
+    // if (!paymentData) {
+    //   throw new Error("Payment not found");
+    // }
 
-    await sendEmail(
+    // await prisma.order.update({
+    //   where: {
+    //     id: order.id,
+    //   },
+    //   data: {
+    //     paymentId: paymentData.id,
+    //   },
+    // });
+
+    // const paymentUrl = paymentData.confirmation.confirmation_url;
+
+    // await sendEmail(
+    //   data.email,
+    //   "Next Pizza / Оплатите заказ #",
+    //   PayOrderTemplate({
+    //     orderId: order.id,
+    //     totalAmount: order.totalAmount,
+    //     paymentUrl,
+    //   })
+    // );
+
+    const mailResult = await mySemdMail(
       data.email,
-      "Next Pizza / Оплатите заказ #",
-      PayOrderTemplate({
-        orderId: order.id,
-        totalAmount: order.totalAmount,
-        paymentUrl,
-      })
+      paymentRequiredTemplate(String(order.id), order.totalAmount, paymentUrl)
     );
 
+    if (!mailResult.success) {
+      throw new Error("Failed to send payment email");
+    }
+    console.log("!!!!Mail is Sended");
     console.log("Order created successfully:");
 
-    return paymentUrl;
+    return {
+      orderId: order.id,
+      paymentUrl,
+    };
   } catch (error) {
-    console.error("Order creation failed:", error);
+    console.error("[CREATE_ORDER_ERROR]", error);
 
     throw new Error(
       `Failed to create order: ${
-        error instanceof Error ? error.message : "Unknown error"
+        error instanceof Error ? error.message : "Failed to create order"
       }`
     );
   }
+
+  //   await prisma.cart.update({
+  //   where: {
+  //     id: userCart.id,
+  //   },
+  //   data: {
+  //     totalAmount: 0,
+  //   },
+  // });
+
+  // await prisma.cartItem.deleteMany({
+  //   where: {
+  //     cartId: userCart.id,
+  //   },
+  // });
 }
 
 export async function updateUserInfo(body: Prisma.UserUpdateInput) {

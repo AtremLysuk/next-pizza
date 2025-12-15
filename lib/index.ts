@@ -1,12 +1,13 @@
-export { getCartItemDetails } from './get-cart-item-details';
+export { getCartItemDetails } from "./get-cart-item-details";
+export { paymentRequiredTemplate } from "./../components/shared/email-templates/my-paylink-mail";
 
-export { sendEmail } from './send-email';
-export { updateCartTotalAmount } from './update-cart-totalAmount';
-export { calcCartItemTotalPrice } from './calc-cart-item-total-price';
-export { getCartDetails } from './get-cart-details';
+export { sendEmail } from "./send-email";
+export { updateCartTotalAmount } from "./update-cart-totalAmount";
+export { calcCartItemTotalPrice } from "./calc-cart-item-total-price";
+export { getCartDetails } from "./get-cart-details";
 
-export { getAvailablePizzaSizes } from './get-available-pizza-sizes';
-export { getPizzaDetails } from './get-pizza-details';
+export { getAvailablePizzaSizes } from "./get-available-pizza-sizes";
+export { getPizzaDetails } from "./get-pizza-details";
 
-export { calcTotalPizzaPrice } from './calc-total-pizza-prices';
-export { createPayment } from './create-payment.';
+export { calcTotalPizzaPrice } from "./calc-total-pizza-prices";
+export { createPayment } from "./create-payment.";
