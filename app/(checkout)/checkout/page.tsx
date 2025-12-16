@@ -18,6 +18,8 @@ import {useEffect, useState} from "react";
 import {useSession} from "next-auth/react";
 import {Api} from "@/services/api-clien";
 
+export const dynamic = "force-dynamic";
+
 export default function CheckoutPage() {
   const [submiting, setSubmiting] = useState(false);
 
@@ -125,3 +127,4 @@ export default function CheckoutPage() {
 function fetchUserInf() {
   throw new Error("Function not implemented.");
 }
+
