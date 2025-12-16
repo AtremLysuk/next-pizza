@@ -59,7 +59,7 @@ export default function CheckoutPage() {
       console.log("Submit");
       const result = await createOrder(data);
 
-      if (result?.url) {
+      if (result?.paymentUrl) {
         window.location.href = result.paymentUrl;
       }
       toast.success("Заказ успешно оформлен! 📝 Переход на оплату... ", {
