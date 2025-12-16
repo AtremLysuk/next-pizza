@@ -1,10 +1,10 @@
-import { AuthOptions } from "next-auth";
+import {AuthOptions} from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "@/prisma/prisma-client";
-import { compare, hashSync } from "bcrypt";
-import { UserRole } from "@prisma/client";
+import {prisma} from "@/prisma/prisma-client";
+import {compare, hashSync} from "bcrypt";
+import {UserRole} from "@prisma/client";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -28,8 +28,8 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "password", type: "password" },
+        email: {label: "Email", type: "text"},
+        password: {label: "password", type: "password"},
       },
       async authorize(credentials) {
         if (!credentials) {
@@ -71,7 +71,7 @@ export const authOptions: AuthOptions = {
   },
 
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn({user, account}) {
       try {
         if (account?.provider === "credentials") {
           return true;
@@ -85,10 +85,10 @@ export const authOptions: AuthOptions = {
           where: {
             OR: [
               {
-                provider: account.provider,
-                providerId: account?.providerAccountId,
+                provider: account?.provider ?? 'credentials',
+                providerId: account?.providerAccountId ?? null,
               },
-              { email: user.email },
+              {email: user.email},
             ],
           },
         });
@@ -125,7 +125,7 @@ export const authOptions: AuthOptions = {
       }
     },
 
-    async jwt({ token }) {
+    async jwt({token}) {
       if (!token.email) return token;
       const findUser = await prisma.user.findFirst({
         where: {
@@ -142,7 +142,7 @@ export const authOptions: AuthOptions = {
 
       return token;
     },
-    session({ session, token }) {
+    session({session, token}) {
       if (session?.user) {
         session.user.id = token.id;
         session.user.role = token.role;
