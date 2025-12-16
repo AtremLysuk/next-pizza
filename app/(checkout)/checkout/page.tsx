@@ -1,28 +1,30 @@
 "use client";
-import { CheckoutSidebar, Container, Title } from "@/components/shared";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useCart } from "@/hooks";
+import {CheckoutSidebar, Container, Title} from "@/components/shared";
+import {useForm, FormProvider} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useCart} from "@/hooks";
 import {
   CheckoutAddressForm,
   CheckoutCart,
   CheckoutPersonalInfo,
   checkoutFormSchema,
 } from "@/components/shared/checkout";
-import { TCheckoutFormValues } from "@/components/shared/checkout/checkout-form-schema";
-import { createOrder } from "@/app/actions";
+import {
+  TCheckoutFormValues
+} from "@/components/shared/checkout/checkout-form-schema";
+import {createOrder} from "@/app/actions";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import { Api } from "@/services/api-clien";
+import {useEffect, useState} from "react";
+import {useSession} from "next-auth/react";
+import {Api} from "@/services/api-clien";
 
 export default function CheckoutPage() {
   const [submiting, setSubmiting] = useState(false);
 
-  const { totalAmount, updateItemQuantity, items, removeCartItem, loading } =
+  const {totalAmount, updateItemQuantity, items, removeCartItem, loading} =
     useCart();
 
-  const { data: session } = useSession();
+  const {data: session} = useSession();
 
   const form = useForm<TCheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -45,6 +47,7 @@ export default function CheckoutPage() {
       form.setValue("lastName", lastName);
       form.setValue("email", data.email);
     }
+
     if (session) {
       fetchUserInfo();
     }
@@ -57,7 +60,7 @@ export default function CheckoutPage() {
       const result = await createOrder(data);
 
       if (result?.url) {
-        window.location.href = result.url;
+        window.location.href = result.paymentUrl;
       }
       toast.success("Заказ успешно оформлен! 📝 Переход на оплату... ", {
         icon: "✅",
@@ -107,7 +110,10 @@ export default function CheckoutPage() {
             </div>
 
             <div className="w-[450px]">
-              <CheckoutSidebar totalAmount={totalAmount} loading={loading} />
+              <CheckoutSidebar
+                totalAmount={totalAmount}
+                loading={loading}
+              />
             </div>
           </div>
         </form>
@@ -115,6 +121,7 @@ export default function CheckoutPage() {
     </Container>
   );
 }
+
 function fetchUserInf() {
   throw new Error("Function not implemented.");
 }
