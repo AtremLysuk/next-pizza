@@ -73,7 +73,11 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async signIn({user, account}) {
       try {
-        if (account?.provider === "credentials") {
+
+        if(!account) {
+          return false
+        }
+        if (account.provider === "credentials") {
           return true;
         }
 
@@ -85,8 +89,8 @@ export const authOptions: AuthOptions = {
           where: {
             OR: [
               {
-                provider: account?.provider ?? 'credentials',
-                providerId: account?.providerAccountId,
+                provider: account.provider ?? 'credentials',
+                providerId: account.providerAccountId,
               },
               {email: user.email},
             ],
@@ -99,8 +103,8 @@ export const authOptions: AuthOptions = {
               id: findUser.id,
             },
             data: {
-              provider: account?.provider,
-              providerId: account?.providerAccountId,
+              provider: account.provider,
+              providerId: account.providerAccountId ?? null,
             },
           });
 
@@ -113,8 +117,8 @@ export const authOptions: AuthOptions = {
             fullName: user.name || "user #" + user.id,
             password: hashSync(user.id.toString(), 10),
             verified: new Date(),
-            provider: account?.provider,
-            providerId: account?.providerAccountId,
+            provider: account.provider,
+            providerId: account.providerAccountId ?? null,
           },
         });
 
