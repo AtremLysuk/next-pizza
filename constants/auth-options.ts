@@ -86,7 +86,7 @@ export const authOptions: AuthOptions = {
             OR: [
               {
                 provider: account?.provider ?? 'credentials',
-                providerId: account?.providerAccountId ?? null,
+                providerId: account?.providerAccountId,
               },
               {email: user.email},
             ],
@@ -100,7 +100,7 @@ export const authOptions: AuthOptions = {
             },
             data: {
               provider: account?.provider,
-              providerId: account?.providerId,
+              providerId: account?.providerAccountId,
             },
           });
 
