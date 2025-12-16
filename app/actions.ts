@@ -1,19 +1,34 @@
 "use server";
 
-import { PayOrderTemplate } from "@/components/shared";
+import {PayOrderTemplate} from "@/components/shared";
 
-import { TCheckoutFormValues } from "@/components/shared/checkout/checkout-form-schema";
-import { createPayment, sendEmail } from "@/lib";
-import { getUserSession } from "@/lib/get-user-session";
-import { prisma } from "@/prisma/prisma-client";
-import { OrderStatus, Prisma } from "@prisma/client";
-import { hashSync } from "bcrypt";
-import { cookies } from "next/headers";
-import { VerificationUserTemplate } from "@/components/shared/email-templates/verification-user";
-import { OrderSuccessTemplate } from "@/components/shared/email-templates/order-success";
-import { paymentRequiredTemplate } from "@/components/shared/email-templates/my-paylink-mail";
-import { mySemdMail } from "@/lib/my-send-mail";
-import { createWayForPayPayment } from "@/lib/wayforpay";
+import {
+  TCheckoutFormValues
+} from "@/components/shared/checkout/checkout-form-schema";
+import {createPayment, sendEmail} from "@/lib";
+import {getUserSession} from "@/lib/get-user-session";
+import {prisma} from "@/prisma/prisma-client";
+import {OrderStatus, Prisma} from "@prisma/client";
+import {hashSync} from "bcrypt";
+import {cookies} from "next/headers";
+import {
+  VerificationUserTemplate
+} from "@/components/shared/email-templates/verification-user";
+import {
+  OrderSuccessTemplate
+} from "@/components/shared/email-templates/order-success";
+import {
+  paymentRequiredTemplate
+} from "@/components/shared/email-templates/my-paylink-mail";
+import {mySemdMail} from "@/lib/my-send-mail";
+import createWayForPayPayment from "@/lib/wayforpay";
+
+
+type OrderItemType = {
+  name: string;
+  price: number;
+  quantity: number;
+}
 
 export async function createOrder(data: TCheckoutFormValues) {
   try {
@@ -52,6 +67,11 @@ export async function createOrder(data: TCheckoutFormValues) {
       throw new Error("Cart is empty");
     }
 
+    const orderItems: OrderItemType[] = userCart.items.map((item) => ({
+      name: item.productItem.product.name,
+      price: Math.round(item.productItem.price / 100),
+      quantity: item.quantity,
+    }))
     const order = await prisma.order.create({
       data: {
         fullName: `${data.firstName} ${data.lastName}`,
@@ -62,7 +82,7 @@ export async function createOrder(data: TCheckoutFormValues) {
         token: cartToken,
         totalAmount: userCart.totalAmount,
         status: OrderStatus.PENDING,
-        items: JSON.stringify(userCart.items),
+        items: orderItems,
       },
     });
 
@@ -70,56 +90,17 @@ export async function createOrder(data: TCheckoutFormValues) {
       orderId: order.id,
       amount: order.totalAmount,
       email: order.email,
+      items: orderItems,
     });
-
-    // await prisma.order.update({
-    //   where: {
-    //     id: order.id,
-    //   },
-    //   data: {
-    //     paymentId: String(order.id),
-    //   },
-    // });
-
-    // fix payment
-    // ========================
-    // const paymentData = await createPayment({
-    //   amount: order.totalAmount,
-    //   orderId: order.id,
-    //   decription: "Оплата заказа #" + order.id,
-    // });
-
-    // if (!paymentData) {
-    //   throw new Error("Payment not found");
-    // }
-
-    // await prisma.order.update({
-    //   where: {
-    //     id: order.id,
-    //   },
-    //   data: {
-    //     paymentId: paymentData.id,
-    //   },
-    // });
-
-    // const paymentUrl = paymentData.confirmation.confirmation_url;
-
-    // await sendEmail(
-    //   data.email,
-    //   "Next Pizza / Оплатите заказ #",
-    //   PayOrderTemplate({
-    //     orderId: order.id,
-    //     totalAmount: order.totalAmount,
-    //     paymentUrl,
-    //   })
-    // );
 
     const mailResult = await mySemdMail(
       data.email,
-      paymentRequiredTemplate(String(order.id), order.totalAmount, paymentUrl)
+      paymentRequiredTemplate(String(order.id), Math.round(order.totalAmount / 100), paymentUrl, orderItems)
     );
 
-    if (!mailResult.success) {
+    if (!
+      mailResult.success
+    ) {
       throw new Error("Failed to send payment email");
     }
     console.log("!!!!Mail is Sended");
@@ -129,7 +110,8 @@ export async function createOrder(data: TCheckoutFormValues) {
       orderId: order.id,
       paymentUrl,
     };
-  } catch (error) {
+  } catch
+    (error) {
     console.error("[CREATE_ORDER_ERROR]", error);
 
     throw new Error(
@@ -139,20 +121,6 @@ export async function createOrder(data: TCheckoutFormValues) {
     );
   }
 
-  //   await prisma.cart.update({
-  //   where: {
-  //     id: userCart.id,
-  //   },
-  //   data: {
-  //     totalAmount: 0,
-  //   },
-  // });
-
-  // await prisma.cartItem.deleteMany({
-  //   where: {
-  //     cartId: userCart.id,
-  //   },
-  // });
 }
 
 export async function updateUserInfo(body: Prisma.UserUpdateInput) {
@@ -224,7 +192,7 @@ export async function registerUser(body: Prisma.UserCreateInput) {
     await sendEmail(
       createdUser.email,
       "Next Pizza / Подтвердите регистрацию",
-      VerificationUserTemplate({ code })
+      VerificationUserTemplate({code})
     );
   } catch (error) {
     console.log("Error [Register_User]", error);

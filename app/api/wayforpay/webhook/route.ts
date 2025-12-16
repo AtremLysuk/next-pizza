@@ -1,9 +1,11 @@
-import { orderSuccessTemplate } from "@/components/shared/email-templates/pay-order";
-import { sendEmail } from "@/lib";
-import { prisma } from "@/prisma/prisma-client";
-import { OrderStatus } from "@prisma/client";
+import {
+  orderSuccessTemplate
+} from "@/components/shared/email-templates/pay-order";
+import {sendEmail} from "@/lib";
+import {prisma} from "@/prisma/prisma-client";
+import {OrderStatus} from "@prisma/client";
 import crypto from "crypto";
-import { NextResponse } from "next/server";
+import {NextResponse} from "next/server";
 
 const MERCHANT_SECRET = process.env.WAYFORPAY_MERCHANT_SECRET!;
 
@@ -15,7 +17,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { orderReference, status, amount, currency, merchantSignature } =
+    const {orderReference, status, amount, currency, merchantSignature} =
       body;
 
     const signatureString = [orderReference, status, amount, currency].join(
@@ -26,19 +28,19 @@ export async function POST(req: Request) {
 
     if (expectedSignature !== merchantSignature) {
       console.log("Invalid signature");
-      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+      return NextResponse.json({error: "Invalid signature"}, {status: 400});
     }
 
     const order = await prisma.order.findUnique({
-      where: { id: Number(orderReference) },
+      where: {id: Number(orderReference)},
     });
 
     if (!order) {
       console.log("Order not found:", orderReference);
-      return NextResponse.json({ error: "Order not found" }, { status: 404 });
+      return NextResponse.json({error: "Order not found"}, {status: 404});
     }
 
-    if (order.status === OrderStatus.PAID) {
+    if (order.status === OrderStatus.SUCCEEDED) {
       return NextResponse.json({
         orderReference,
         status: "accept",
@@ -47,9 +49,9 @@ export async function POST(req: Request) {
 
     if (status === "Approved") {
       await prisma.order.update({
-        where: { id: order.id },
+        where: {id: order.id},
         data: {
-          status: OrderStatus.PAID,
+          status: OrderStatus.SUCCEEDED,
         },
       });
     }
@@ -81,7 +83,7 @@ export async function POST(req: Request) {
       });
 
       await prisma.cart.update({
-        where: { id: cart.id },
+        where: {id: cart.id},
         data: {
           totalAmount: 0,
         },
@@ -90,7 +92,7 @@ export async function POST(req: Request) {
 
     if (status === "Declined") {
       await prisma.order.update({
-        where: { id: order.id },
+        where: {id: order.id},
         data: {
           status: OrderStatus.CANCELLED,
         },
@@ -104,6 +106,6 @@ export async function POST(req: Request) {
   } catch (error) {
     console.log("Webhook error:", error);
 
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({error: "Server error"}, {status: 500});
   }
 }

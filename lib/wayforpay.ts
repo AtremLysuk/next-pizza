@@ -1,16 +1,26 @@
 import crypto from "crypto";
 
+
+interface WayForPayItemType {
+  name: string;
+  price: number;
+  quantity: number;
+}
+
 interface CreateWayForPayPaymentParams {
   orderId: number;
   amount: number;
   email: string;
+  items: WayForPayItemType[];
 }
 
-export async function createWayForPayPayment({
-  orderId,
-  amount,
-  email,
-}: CreateWayForPayPaymentParams) {
+
+async function createWayForPayPayment({
+                                        orderId,
+                                        amount,
+                                        email,
+                                        items,
+                                      }: CreateWayForPayPaymentParams) {
   const merchantAccount = process.env.WAYFORPAY_MERCHANT_ACCOUNT!;
   const merchantSecret = process.env.WAYFORPAY_MERCHANT_SECRET!;
   const merchantDomainName = process.env.WAYFORPAY_MERCHANT_DOMAIN!;
@@ -19,9 +29,9 @@ export async function createWayForPayPayment({
   const orderDate = Math.floor(Date.now() / 1000);
   const amountUah = Math.round(amount / 100);
 
-  const productName = ["Pizza order"];
-  const productCount = ["1"];
-  const productPrice = [amountUah];
+  const productName = items.map((item) => item.name)
+  const productCount = items.map(item => item.quantity);
+  const productPrice = items.map(item => Math.round(item.price / 100));
 
   const signatureString = [
     merchantAccount,
@@ -77,3 +87,5 @@ export async function createWayForPayPayment({
 
   return data.invoiceUrl;
 }
+
+export default createWayForPayPayment
