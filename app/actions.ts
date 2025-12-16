@@ -1,11 +1,11 @@
 "use server";
 
-import {PayOrderTemplate} from "@/components/shared";
+;
 
 import {
   TCheckoutFormValues
 } from "@/components/shared/checkout/checkout-form-schema";
-import {createPayment, sendEmail} from "@/lib";
+import {sendEmail} from "@/lib";
 import {getUserSession} from "@/lib/get-user-session";
 import {prisma} from "@/prisma/prisma-client";
 import {OrderStatus, Prisma} from "@prisma/client";
@@ -14,9 +14,7 @@ import {cookies} from "next/headers";
 import {
   VerificationUserTemplate
 } from "@/components/shared/email-templates/verification-user";
-import {
-  OrderSuccessTemplate
-} from "@/components/shared/email-templates/order-success";
+
 import {
   paymentRequiredTemplate
 } from "@/components/shared/email-templates/my-paylink-mail";
