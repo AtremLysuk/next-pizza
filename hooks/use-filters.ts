@@ -1,6 +1,6 @@
-import { useSearchParams } from 'next/navigation';
-import { useSet } from 'react-use';
-import { useState } from 'react';
+import {useSearchParams} from 'next/navigation';
+import {useSet} from 'react-use';
+import {useState} from 'react';
 
 interface PriceProps {
   priceFrom?: number;
@@ -33,17 +33,17 @@ export const useFilters = (): ReturnProps => {
     string
   >;
 
-  const [sizes, { toggle: toggleSizes }] = useSet(
+  const [sizes, {toggle: toggleSizes}] = useSet(
     new Set<string>(
       searchParams.has('sizes') ? searchParams.get('sizes')?.split(',') : []
     )
   );
 
-  const [selectedIngredients, { toggle: toggleIngredients }] = useSet(
+  const [selectedIngredients, {toggle: toggleIngredients}] = useSet(
     new Set<string>(searchParams.get('ingredients')?.split(','))
   );
 
-  const [pizzaTypes, { toggle: togglepizzaTypes }] = useSet(
+  const [pizzaTypes, {toggle: togglepizzaTypes}] = useSet(
     new Set<string>(
       searchParams.has('pizzaTypes')
         ? searchParams.get('pizzaTypes')?.split(',')
