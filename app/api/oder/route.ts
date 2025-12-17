@@ -1,7 +1,9 @@
-import { TCheckoutFormValues } from '@/components/shared/checkout/checkout-form-schema';
-import { prisma } from '@/prisma/prisma-client';
-import { OrderStatus } from '@prisma/client';
-import { NextRequest, NextResponse } from 'next/server';
+import {
+  TCheckoutFormValues
+} from '@/components/shared/checkout/checkout-form-schema';
+import {prisma} from '@/prisma/prisma-client';
+import {OrderStatus} from '@prisma/client';
+import {NextRequest, NextResponse} from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,12 +25,12 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ success: true, order: order }, { status: 200 });
+    return NextResponse.json({success: true, order: order}, {status: 200});
   } catch (error) {
     console.log(error);
     return NextResponse.json(
-      { success: false, error: 'Order creation failed' },
-      { status: 500 }
+      {success: false, error: 'Order creation failed'},
+      {status: 500}
     );
   }
 }
