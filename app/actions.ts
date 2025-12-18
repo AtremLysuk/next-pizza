@@ -93,7 +93,7 @@ export async function createOrder(data: TCheckoutFormValues) {
 
     const mailResult = await mySemdMail(
       data.email,
-      paymentRequiredTemplate(String(order.id), Math.round(order.totalAmount / 100), paymentUrl, orderItems)
+      paymentRequiredTemplate(String(order.id), order.totalAmount, paymentUrl, orderItems)
     );
 
     if (!
