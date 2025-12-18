@@ -27,18 +27,23 @@ async function createWayForPayPayment({
 
   const orderReference = String(orderId);
   const orderDate = Math.floor(Date.now() / 1000);
-  const amountUah = Math.round(amount / 100);
 
-  const productName = items.map((item) => item.name)
+
+  const productName = items.map(item => item.name);
   const productCount = items.map(item => item.quantity);
-  const productPrice = items.map(item => Math.round(item.price / 100));
+  const productPrice = items.map(item => item.price);
+
+  console.log("ORDER TOTAL:", amount);
+  console.log("WAYFORPAY AMOUNT:", amount);
+  console.log("PRODUCT PRICE:", productPrice);
+  console.log("PRODUCT COUNT:", productCount);
 
   const signatureString = [
     merchantAccount,
     merchantDomainName,
     orderReference,
     orderDate,
-    amountUah,
+    amount,
     "UAH",
     ...productName,
     ...productCount,
@@ -64,7 +69,7 @@ async function createWayForPayPayment({
 
       orderReference,
       orderDate,
-      amount: amountUah,
+      amount: amount,
       currency: "UAH",
 
       productName,
@@ -73,6 +78,8 @@ async function createWayForPayPayment({
 
       returnUrl: process.env.WAYFORPAY_RETURN_URL,
       serviceUrl: process.env.WAYFORPAY_SERVICE_URL,
+      approvedUrl: process.env.WAYFORPAY_APPROVED_URL,
+      declinedUrl: process.env.WAYFORPAY_DECLINED_URL,
       clientEmail: email,
     }),
   });

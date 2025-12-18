@@ -1,6 +1,4 @@
-import {
-  TCheckoutFormValues
-} from '@/components/shared/checkout/checkout-form-schema';
+
 import {prisma} from '@/prisma/prisma-client';
 import {OrderStatus} from '@prisma/client';
 import {NextRequest, NextResponse} from 'next/server';

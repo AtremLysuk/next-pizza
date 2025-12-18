@@ -47,6 +47,7 @@ export async function POST(req: Request) {
       });
     }
 
+
     if (status === "Approved") {
       await prisma.order.update({
         where: {id: order.id},
@@ -56,8 +57,6 @@ export async function POST(req: Request) {
       });
     }
 
-    console.log("📧 Sending success email to:", order.email);
-
     await sendEmail(
       order.email,
       "Next Pizza — Оплата подтверждена 🍕",
@@ -66,8 +65,6 @@ export async function POST(req: Request) {
         totalAmount: order.totalAmount,
       })
     );
-
-    console.log("✅ Success email sent");
 
     const cart = await prisma.cart.findFirst({
       where: {
@@ -97,7 +94,7 @@ export async function POST(req: Request) {
           status: OrderStatus.CANCELLED,
         },
       });
-    }
+    }``
 
     return NextResponse.json({
       orderReference,
