@@ -31,7 +31,12 @@ async function createWayForPayPayment({
 
   const productName = items.map((item) => item.name)
   const productCount = items.map(item => item.quantity);
-  const productPrice = items.map(item => Math.round(item.price / 100));
+  const productPrice = items.map(item => item.price.toFixed(2));
+
+  console.log("ORDER TOTAL:", amount);
+  console.log("WAYFORPAY AMOUNT:", amountUah);
+  console.log("PRODUCT PRICE:", productPrice);
+  console.log("PRODUCT COUNT:", productCount);
 
   const signatureString = [
     merchantAccount,
