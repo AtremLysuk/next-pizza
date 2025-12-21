@@ -27,7 +27,7 @@ export const ingredients = [
     name: 'Сливочная моцарелла',
     price: 79,
     imageUrl:
-      'assets/images/dataItems/ingredients/macarella.png',
+      'assets/images/dataItems/ingredients/mocarella.png',
   },
   {
     name: 'Сыры чеддер и пармезан',
@@ -87,7 +87,7 @@ export const ingredients = [
     name: 'Красный лук',
     price: 59,
     imageUrl:
-      'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA60AE6464C',
+      'assets/images/dataItems/ingredients/onio.png',
   },
   {
     name: 'Сочные ананасы',
@@ -137,7 +137,7 @@ export const products = [
   {
     name: 'Кофе Латте',
     imageUrl:
-      'assets/images/dataItems/breakfast/omlet-pepperoni.png',
+      'assets/images/dataItems/cofee/late.png',
     categoryId: 2,
   },
   {
@@ -179,7 +179,7 @@ export const products = [
   {
     name: 'Карамельное яблоко молочный коктейль',
     imageUrl:
-      'assets/images/dataItems/cofee/shakeStawberry.png',
+      'assets/images/dataItems/cofee/shakeStrawberry.png',
     categoryId: 4,
   },
   {
@@ -197,7 +197,7 @@ export const products = [
   {
     name: 'Ирландский Капучино',
     imageUrl:
-      'assets/images/dataItems/cofee/capucchino.png',
+      'assets/images/dataItems/cofee/capicchino.png',
     categoryId: 5,
   },
   {

@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import {cn} from '@/lib/utils';
 import React from 'react';
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
   size: number;
 }
 
-export const PizzaImage: React.FC<Props> = ({ size, imageUrl, className }) => {
+export const PizzaImage: React.FC<Props> = ({size, imageUrl, className}) => {
   return (
     <div
       className={cn(
@@ -16,17 +16,15 @@ export const PizzaImage: React.FC<Props> = ({ size, imageUrl, className }) => {
       )}
     >
       <img
-        className={cn('relative left-2 top-2 transition-all a-10 duratio-300', {
-          'w-[300px] h-[300px]': size === 20,
-          'w-[400px] h-[400px]': size === 30,
-          'w-[500px] h-[500px]': size === 40,
+        className={cn('relative left-2 top-2 transition-all a-10 duration-300', {
+          'w-[75%] h-[75%]': size === 20,
+          'w-[85%] h-[85%]': size === 30,
+          'w-[95%] h-[95%]': size === 40,
         })}
         src={imageUrl}
         alt="logo"
       />
 
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-dashed border-2 rounded-full border-gray-200 w-[450px] h-[450px]"></div>
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-dotted border-2 rounded-full border-gray-100 w-[370px] h-[370px]"></div>
     </div>
   );
 };

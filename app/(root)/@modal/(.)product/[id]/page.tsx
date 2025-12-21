@@ -1,14 +1,14 @@
-import { ChooseProductModal } from '@/components/shared';
-import { prisma } from '@/prisma/prisma-client';
-import { notFound } from 'next/navigation';
-import { use } from 'react';
+import {ChooseProductModal} from '@/components/shared';
+import {prisma} from '@/prisma/prisma-client';
+import {notFound} from 'next/navigation';
+import {use} from 'react';
 
 export default function ProductModalPage({
-  params,
-}: {
+                                           params,
+                                         }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
+  const {id} = use(params);
 
   const product = use(
     prisma.product.findFirst({
@@ -22,7 +22,8 @@ export default function ProductModalPage({
     })
   );
 
-  if(!product) {
+
+  if (!product) {
     return notFound();
   }
 

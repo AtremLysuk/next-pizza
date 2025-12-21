@@ -40,7 +40,6 @@ export const ProductsGroupList: React.FC<Props> = ({
     }
   }, [categoryId, intersection?.isIntersecting, title]);
 
-  console.log(items);
   return (
     <div
       className={className}
@@ -62,7 +61,7 @@ export const ProductsGroupList: React.FC<Props> = ({
             price={product.items[0]?.price ?? 0}
             count={1}
             ingredients={product.ingredients}
-            imageUrl={product.imageUrl}
+            imageUrl={`/${product.imageUrl}`}
           />
         ))}
       </div>
