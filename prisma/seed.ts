@@ -241,11 +241,11 @@ async function up() {
     data: [
       {
         storyId: 1,
-        sourceUrl: "/assets/images/stories/story-1.webp",
+        sourceUrl: "/assets/images/dataItems/stories/story-1.webp",
       },
       {
         storyId: 2,
-        sourceUrl: "/assets/images/stories/story-2.webp",
+        sourceUrl: "/assets/images/dataItems/stories/story-2.webp",
       },
       {
         storyId: 3,
