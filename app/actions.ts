@@ -101,8 +101,6 @@ export async function createOrder(data: TCheckoutFormValues) {
     ) {
       throw new Error("Failed to send payment email");
     }
-    console.log("!!!!Mail is Sended");
-    console.log("Order created successfully:");
 
     return {
       orderId: order.id,

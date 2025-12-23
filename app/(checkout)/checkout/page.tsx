@@ -58,7 +58,6 @@ export default function CheckoutPage() {
   const onSubmit = async (data: TCheckoutFormValues) => {
     try {
       setSubmiting(true);
-      console.log("Submit");
       const result = await createOrder(data);
 
       if (result?.paymentUrl) {

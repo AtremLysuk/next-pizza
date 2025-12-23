@@ -1,16 +1,18 @@
-import { FC, useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Button } from "@/components/ui";
-import { signIn } from "next-auth/react";
-import { LoginForm } from "./forms/login-form";
-import { RegisterForm } from "./forms/register-form";
+import {FC, useState} from "react";
+import {Dialog, DialogContent} from "@/components/ui/dialog";
+import {Button} from "@/components/ui";
+import {signIn} from "next-auth/react";
+import {LoginForm} from "./forms/login-form";
+import {RegisterForm} from "./forms/register-form";
+import {FcGoogle} from "react-icons/fc";
+import {FaGithub} from "react-icons/fa";
 
 interface Props {
   open: boolean;
   onClose: () => void;
 }
 
-export const AuthModal: FC<Props> = ({ open, onClose }) => {
+export const AuthModal: FC<Props> = ({open, onClose}) => {
   const [type, setType] = useState<"login" | "register">("login");
 
   const onSwitchType = () => {
@@ -22,7 +24,10 @@ export const AuthModal: FC<Props> = ({ open, onClose }) => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog
+      open={open}
+      onOpenChange={handleClose}
+    >
       <DialogContent className="w-[450px] bg-white p-10">
         {type === "login" ? (
           <LoginForm onClose={handleClose} />
@@ -43,13 +48,10 @@ export const AuthModal: FC<Props> = ({ open, onClose }) => {
             type="button"
             className="gap-2 h-12 p-2 flex-1"
           >
-            <img
-              className="w-6 h-6"
-              src="https://github.com/"
-              alt="GitHub page"
-            />
+            <FaGithub size={24} />
             GitHub
           </Button>
+
           <Button
             variant="secondary"
             onClick={() =>
@@ -61,11 +63,8 @@ export const AuthModal: FC<Props> = ({ open, onClose }) => {
             type="button"
             className="gap-2 h-12 p-2 flex-1"
           >
-            <img
-              className="w-6 h-6"
-              src="https://google.com/"
-              alt="Google page"
-            />
+
+            <FcGoogle size={24} />
             Google
           </Button>
         </div>

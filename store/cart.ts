@@ -55,10 +55,9 @@ export const useCartStore = create<CartState>((set) => ({
 
       set({ items, totalAmount });
 
-      console.log(items);
+
     } catch (error) {
       console.log(error);
-      console.log('!!!!!ERRRR');
       set({ error: true });
     } finally {
       set({ loading: false });
@@ -91,7 +90,7 @@ export const useCartStore = create<CartState>((set) => ({
   },
 
   addCartItem: async (values: CreateCartItemValues) => {
-    console.log(values);
+
     try {
       set({ loading: true, error: false });
       const data = await Api.cart.addCartItem(values);
@@ -99,7 +98,6 @@ export const useCartStore = create<CartState>((set) => ({
 
       set({ items, totalAmount });
 
-      console.log(items);
     } catch (error) {
       console.log(error);
       console.log('!!!!!ERRRROORRR');

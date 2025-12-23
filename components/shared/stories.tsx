@@ -1,17 +1,17 @@
 "use client";
-import { cn } from "@/lib/utils";
-import { Api } from "@/services/api-clien";
-import { IStory } from "@/services/stories";
-import React, { useEffect, useState } from "react";
-import { Container } from "./container";
-import { X } from "lucide-react";
+import {cn} from "@/lib/utils";
+import {Api} from "@/services/api-clien";
+import {IStory} from "@/services/stories";
+import React, {useEffect, useState} from "react";
+import {Container} from "./container";
+import {X} from "lucide-react";
 import ReactInstaStories from "react-insta-stories";
 
 interface Props {
   className?: string;
 }
 
-export const Stories: React.FC<Props> = ({ className }) => {
+export const Stories: React.FC<Props> = ({className}) => {
   const [stories, setStories] = useState<IStory[]>([]);
   const [open, setOpen] = useState(false);
   const [selectedStory, setSelectedStory] = useState<IStory>();
@@ -21,6 +21,7 @@ export const Stories: React.FC<Props> = ({ className }) => {
       const data = await Api.stories.getAll();
       setStories(data);
     }
+
     fetchStories();
   }, []);
 
@@ -45,40 +46,112 @@ export const Stories: React.FC<Props> = ({ className }) => {
         ))}
 
       {stories.map((story) => (
-        <img
-          key={story.id}
-          onClick={() => onClickStory(story)}
-          className="rounded-md cursor-pointer"
-          height={250}
-          width={200}
-          src={story.previewImageUrl}
-        />
-      ))}
+          <div
+            key={story.id}
+            className="group relative
+            w-[200px] h-[250px]
+            rounded-xl overflow-hidden
+            cursor-pointer
+            transition-transform duration-300
+            hover:scale-[1.03]"
+            onClick={() => onClickStory(story)}
+          >
+            <img
+
+              className="
+              w-full h-full
+              object-cover
+              transition-transform duration-300
+              group-hover:scale-110"
+              height={250}
+              width={200}
+              src={story.previewImageUrl}
+            />
+          </div>
+
+        )
+      )}
+
+      {/*{*/}
+      {/*  // open && (*/}
+      {/*  //   <div className="absolute left-0 top-0 w-full h-full bg-black/80 flex items-center justify-center z-30">*/}
+      {/*  //     <div*/}
+      {/*  //       className="relative"*/}
+      {/*  //       style={{width: 520}}*/}
+      {/*  //     >*/}
+      {/*  //       <button*/}
+      {/*  //         className="absolute -right-10 -top-5 z-30"*/}
+      {/*  //         type="button"*/}
+      {/*  //         onClick={() => setOpen(false)}*/}
+      {/*  //       >*/}
+      {/*  //         <X className="absolute top-0 right-0 w-8 h-8 text-white/50" />*/}
+      {/*  //       </button>*/}
+      {/*  //       <ReactInstaStories*/}
+      {/*  //         onAllStoriesEnd={() => setOpen(false)}*/}
+      {/*  //         stories={*/}
+      {/*  //           selectedStory?.items.map((item) => ({*/}
+      {/*  //             url: item.sourceUrl,*/}
+      {/*  //           })) || []*/}
+      {/*  //         }*/}
+      {/*  //         defaultInterval={3000}*/}
+      {/*  //         width={520}*/}
+      {/*  //         height={768}*/}
+      {/*  //       />*/}
+      {/*  //     </div>*/}
+      {/*  //   </div>*/}
+      {/*  // )*/}
+      {/*}*/}
 
       {open && (
-        <div className="absolute left-0 top-0 w-full h-full bg-black/80 flex items-center justify-center z-30">
-          <div className="relative" style={{ width: 520 }}>
+        <div
+          className="
+          fixed inset-0 z-50
+          bg-black/80
+          flex items-center justify-center
+          px-4"
+        >
+          <div
+            className="
+            relative
+            w-[360px]
+            max-h-[90vh]
+            aspect-[9/16]
+            bg-black
+            rounded-xl
+            overflow-hidden"
+          >
             <button
-              className="absolute -right-10 -top-5 z-30"
+              className="
+              absolute top-3 right-3 z-50
+              text-white/70 hover:text-white
+              transition cursor-pointer"
               type="button"
               onClick={() => setOpen(false)}
             >
-              <X className="absolute top-0 right-0 w-8 h-8 text-white/50" />
+              <X className="w-6 h-6" />
             </button>
             <ReactInstaStories
               onAllStoriesEnd={() => setOpen(false)}
               stories={
                 selectedStory?.items.map((item) => ({
-                  url: item.sourceUrl,
+                  content: () => (
+                    <img
+                      src={item.sourceUrl}
+                      className="w-full h-full object-cover"
+                    />
+                  ),
                 })) || []
               }
               defaultInterval={3000}
-              width={520}
-              height={768}
+              width={360}
+              height={640}
             />
           </div>
         </div>
       )}
+
+
     </Container>
-  );
+  )
+    ;
 };

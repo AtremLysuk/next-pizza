@@ -217,22 +217,22 @@ async function up() {
   await prisma.story.createMany({
     data: [
       {
-        previewImageUrl: "/assets/images/stories/story-1.webp",
+        previewImageUrl: "/assets/images/dataItems/stories/story-1.webp",
       },
       {
-        previewImageUrl: "/assets/images/stories/story-2.webp",
+        previewImageUrl: "/assets/images/dataItems/stories/story-2.webp",
       },
       {
-        previewImageUrl: "/assets/images/stories/story-1.webp",
+        previewImageUrl: "/assets/images/dataItems/stories/story-3.jpg",
       },
       {
-        previewImageUrl: "/assets/images/stories/story-2.webp",
+        previewImageUrl: "/assets/images/dataItems/stories/story-4.jpg",
       },
       {
-        previewImageUrl: "/assets/images/stories/story-1.webp",
+        previewImageUrl: "/assets/images/dataItems/stories/story-5.jpg",
       },
       {
-        previewImageUrl: "/assets/images/stories/story-2.webp",
+        previewImageUrl: "/assets/images/dataItems/stories/story-6.jpg",
       },
     ],
   });
@@ -249,19 +249,19 @@ async function up() {
       },
       {
         storyId: 3,
-        sourceUrl: "/assets/images/stories/story-1.webp",
+        sourceUrl: "/assets/images/dataItems/stories/story-3.jpg",
       },
       {
         storyId: 4,
-        sourceUrl: "/assets/images/stories/story-2.webp",
+        sourceUrl: "/assets/images/dataItems/stories/story-4.jpg",
       },
       {
         storyId: 5,
-        sourceUrl: "/assets/images/stories/story-1.webp",
+        sourceUrl: "/assets/images/dataItems/stories/story-5.jpg",
       },
       {
         storyId: 6,
-        sourceUrl: "/assets/images/stories/story-2.webp",
+        sourceUrl: "/assets/images/dataItems/stories/story-6.jpg",
       },
     ],
   });
