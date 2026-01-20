@@ -4,7 +4,6 @@ import {Title} from './title';
 import {Plus} from 'lucide-react';
 import {Button} from '../ui';
 import {Ingredient} from '@prisma/client';
-import {log} from "console";
 
 interface Props {
   id: number;
