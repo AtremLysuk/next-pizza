@@ -45,9 +45,11 @@ export const Stories: React.FC<Props> = ({className}) => {
           ></div>
         ))}
 
-      {stories.map((story) => (
-          <div
+      {stories.map((story, index) => (
+          <button
             key={story.id}
+            type="button"
+            aria-label={`Открыть историю ${index + 1}`}
             className="group relative
             w-[200px] h-[250px]
             rounded-xl overflow-hidden
@@ -57,7 +59,7 @@ export const Stories: React.FC<Props> = ({className}) => {
             onClick={() => onClickStory(story)}
           >
             <img
-
+              alt=""
               className="
               w-full h-full
               object-cover
@@ -67,7 +69,7 @@ export const Stories: React.FC<Props> = ({className}) => {
               width={200}
               src={story.previewImageUrl}
             />
-          </div>
+          </button>
 
         )
       )}
@@ -96,6 +98,7 @@ export const Stories: React.FC<Props> = ({className}) => {
               text-white/70 hover:text-white
               transition cursor-pointer"
               type="button"
+              aria-label="Закрыть"
               onClick={() => setOpen(false)}
             >
               <X className="w-6 h-6" />
@@ -107,6 +110,7 @@ export const Stories: React.FC<Props> = ({className}) => {
                   content: () => (
                     <img
                       src={item.sourceUrl}
+                      alt=""
                       className="w-full h-full object-cover"
                     />
                   ),
