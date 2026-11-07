@@ -3,7 +3,9 @@ import { Header } from "@/components/shared/header";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Next Pizza | Главнвя",
+  title: "Next Pizza | Главная",
+  description:
+    "Next Pizza — доставка пиццы, завтраков, закусок и напитков. Собери пиццу с нужными ингредиентами, выбери размер и тесто, оплати онлайн.",
 };
 
 export default function HomeLayout({
