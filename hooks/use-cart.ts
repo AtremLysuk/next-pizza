@@ -6,6 +6,7 @@ type ReturnProps = {
   totalAmount: number;
   items: CartStateItem[];
   loading: boolean;
+  flushPendingUpdates: () => Promise<void>;
   updateItemQuantity: (id: number, quantity: number) => void;
   removeCartItem: (id: number) => void;
   addCartItem: (values: CreateCartItemValues) => void;

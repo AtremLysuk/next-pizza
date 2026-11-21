@@ -70,6 +70,12 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
 
+  pages: {
+    // Ошибки OAuth NextAuth показывает на странице входа, остальные — на странице ошибки.
+    // Своей отдельной страницы входа нет (вход через модалку), поэтому обе ведут сюда
+    signIn: "/auth-error",
+    error: "/auth-error",
+  },
   callbacks: {
     async signIn({user, account}) {
       try {

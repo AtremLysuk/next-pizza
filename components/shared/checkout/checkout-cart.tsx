@@ -1,10 +1,10 @@
 import { FC } from 'react';
+import Link from 'next/link';
 import { CheckoutItem } from '../checkout-item';
 import { WhiteBlock } from '../white-block';
 import { PizzaSize, PizzaType } from '@/constants/pizza';
 import { getCartItemDetails } from '@/lib';
 import { CartStateItem } from '@/store';
-import { Skeleton } from '@/components/ui';
 import { CheckoutItemSkeleton } from './checkout-item-skeleton';
 
 interface Props {
@@ -26,15 +26,21 @@ export const CheckoutCart: FC<Props> = ({
   loading,
 }) => {
   return (
-    <WhiteBlock title="1.корзина">
+    <WhiteBlock title="1. Корзина">
       <div className="flex flex-col gap-5">
         {loading &&
-          [...Array(2)]
-            .fill(0)
-            .map((el, index) => <CheckoutItemSkeleton key={index} />)}
+          [...Array(2)].map((_, index) => <CheckoutItemSkeleton key={index} />)}
+
+        {!loading && items.length === 0 && (
+          <div className="py-6 text-center">
+            <p className="mb-3 text-gray-500">Корзина пуста</p>
+            <Link href="/" className="font-bold text-primary hover:underline">
+              Перейти в каталог
+            </Link>
+          </div>
+        )}
 
         {!loading &&
-          items.length > 0 &&
           items.map((item) => (
             <CheckoutItem
               key={item.id}

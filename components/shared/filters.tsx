@@ -90,7 +90,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
             type="number"
             min={100}
             max={1000}
-            placeholder="30000"
+            placeholder="1000"
             value={String(filters.prices.priceTo)}
             onChange={(e) =>
               filters.setPrices('priceTo', Number(e.target.value))

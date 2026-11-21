@@ -9,7 +9,7 @@ interface Props {
 
 export const CheckoutAddressForm: FC<Props> = ({ className }) => {
   return (
-    <WhiteBlock title="3.Адрес доставки" className={className}>
+    <WhiteBlock title="3. Адрес доставки" className={className}>
       <div className="flex flex-col gap-5">
         <FormInput
           name="address"
