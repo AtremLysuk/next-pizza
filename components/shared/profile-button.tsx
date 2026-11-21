@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import React from 'react';
 import { Button } from '../ui';
 import { CircleUser, User } from 'lucide-react';
@@ -23,17 +23,22 @@ export const ProfileButton: React.FC<Props> = ({
           onClick={onClickSignIn}
           variant="outline"
           className="flex items-center gap-1"
+          aria-label="Войти"
         >
           <User size={16} />
-          Войти
+          <span className="hidden sm:inline">Войти</span>
         </Button>
       ) : (
-        <Link href="/profile">
-          <Button variant="secondary" className="flex items-center gap-2">
+        <Button
+          asChild
+          variant="secondary"
+          className="flex items-center gap-2"
+        >
+          <Link href="/profile" aria-label="Профиль">
             <CircleUser size={18} />
-            Профиль
-          </Button>
-        </Link>
+            <span className="hidden sm:inline">Профиль</span>
+          </Link>
+        </Button>
       )}
     </div>
   );

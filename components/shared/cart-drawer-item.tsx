@@ -30,29 +30,30 @@ export const CartDrewerItem: React.FC<Props> = ({
   return (
     <div
       className={cn(
-        'flex bg-white p-5 gap-6',
-        {
-          'opacity-50 pointer-events-none': disabled,
-        },
+        'flex gap-3 rounded-lg bg-white p-3 sm:gap-6 sm:p-5',
+        { 'pointer-events-none opacity-50': disabled },
         className
       )}
     >
       <CartItemDetailsImage src={imageUrl} />
 
-      <div className="flex-1">
+      <div className="min-w-0 flex-1">
         <CartItemDetailsInfo name={name} details={details} />
 
         <hr className="my-3" />
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <CountButton onClick={onClickCountButton} value={quantity} />
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 sm:gap-3">
             <CartItemDetailsPrice value={price} />
-            <Trash2Icon
-              className="text-gray-400 cursor-pointer hover:text-gray-600"
-              size={16}
+            <button
+              type="button"
+              aria-label={`Удалить ${name} из корзины`}
+              className="rounded p-2 text-gray-400 hover:text-gray-600"
               onClick={onClickRemove}
-            />
+            >
+              <Trash2Icon size={16} aria-hidden="true" />
+            </button>
           </div>
         </div>
       </div>

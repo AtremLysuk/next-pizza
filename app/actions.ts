@@ -1,32 +1,22 @@
 "use server";
 
-;
-
-import {
-  TCheckoutFormValues
-} from "@/components/shared/checkout/checkout-form-schema";
-import {sendEmail} from "@/lib";
-import {getUserSession} from "@/lib/get-user-session";
-import {prisma} from "@/prisma/prisma-client";
-import {OrderStatus, Prisma} from "@prisma/client";
-import {hashSync} from "bcrypt";
-import {cookies} from "next/headers";
-import {
-  VerificationUserTemplate
-} from "@/components/shared/email-templates/verification-user";
-
-import {
-  paymentRequiredTemplate
-} from "@/components/shared/email-templates/my-paylink-mail";
-import {mySemdMail} from "@/lib/my-send-mail";
+import { TCheckoutFormValues } from "@/components/shared/checkout/checkout-form-schema";
+import { sendEmail, calcOrderTotal, calcCartItemTotalPrice } from "@/lib";
+import { getUserSession } from "@/lib/get-user-session";
+import { prisma } from "@/prisma/prisma-client";
+import { OrderStatus, Prisma } from "@prisma/client";
+import { hashSync } from "bcrypt";
+import { cookies } from "next/headers";
+import { VerificationUserTemplate } from "@/components/shared/email-templates/verification-user";
+import { paymentRequiredTemplate } from "@/components/shared/email-templates/my-paylink-mail";
+import { mySemdMail } from "@/lib/my-send-mail";
 import createWayForPayPayment from "@/lib/wayforpay";
-
 
 type OrderItemType = {
   name: string;
   price: number;
   quantity: number;
-}
+};
 
 export async function createOrder(data: TCheckoutFormValues) {
   try {
@@ -57,19 +47,21 @@ export async function createOrder(data: TCheckoutFormValues) {
       },
     });
 
-    if (!userCart || userCart.totalAmount === 0) {
+    if (!userCart) {
       throw new Error("Cart not found");
     }
 
-    if (userCart?.totalAmount === 0) {
+    if (userCart.totalAmount === 0) {
       throw new Error("Cart is empty");
     }
 
+    // Цена позиции за 1 шт. — вместе с добавленными ингредиентами
     const orderItems: OrderItemType[] = userCart.items.map((item) => ({
       name: item.productItem.product.name,
-      price: Math.round(item.productItem.price / 100),
+      price: Math.round(calcCartItemTotalPrice(item) / item.quantity),
       quantity: item.quantity,
-    }))
+    }));
+
     const order = await prisma.order.create({
       data: {
         fullName: `${data.firstName} ${data.lastName}`,
@@ -78,7 +70,8 @@ export async function createOrder(data: TCheckoutFormValues) {
         address: data.address,
         comment: data.comment,
         token: cartToken,
-        totalAmount: userCart.totalAmount,
+        // Тот же расчёт итога, что и на странице оформления: товары + налог + доставка
+        totalAmount: calcOrderTotal(userCart.totalAmount).total,
         status: OrderStatus.PENDING,
         items: orderItems,
       },
@@ -93,12 +86,15 @@ export async function createOrder(data: TCheckoutFormValues) {
 
     const mailResult = await mySemdMail(
       data.email,
-      paymentRequiredTemplate(String(order.id), order.totalAmount, paymentUrl, orderItems)
+      paymentRequiredTemplate(
+        String(order.id),
+        order.totalAmount,
+        paymentUrl,
+        orderItems,
+      ),
     );
 
-    if (!
-      mailResult.success
-    ) {
+    if (!mailResult.success) {
       throw new Error("Failed to send payment email");
     }
 
@@ -106,17 +102,15 @@ export async function createOrder(data: TCheckoutFormValues) {
       orderId: order.id,
       paymentUrl,
     };
-  } catch
-    (error) {
+  } catch (error) {
     console.error("[CREATE_ORDER_ERROR]", error);
 
     throw new Error(
       `Failed to create order: ${
         error instanceof Error ? error.message : "Failed to create order"
-      }`
+      }`,
     );
   }
-
 }
 
 export async function updateUserInfo(body: Prisma.UserUpdateInput) {
@@ -161,7 +155,7 @@ export async function registerUser(body: Prisma.UserCreateInput) {
 
     if (user) {
       if (!user.verified) {
-        throw new Error("Mail dosn't verified");
+        throw new Error("Mail doesn't verified");
       }
 
       throw new Error("User already exists");
@@ -176,7 +170,8 @@ export async function registerUser(body: Prisma.UserCreateInput) {
       },
     });
 
-    const code = Math.floor(100000 + Math.random() * 9000000).toString();
+    // Шестизначный код: от 100000 до 999999
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
 
     await prisma.verificationCode.create({
       data: {
@@ -188,7 +183,7 @@ export async function registerUser(body: Prisma.UserCreateInput) {
     await sendEmail(
       createdUser.email,
       "Next Pizza / Подтвердите регистрацию",
-      VerificationUserTemplate({code})
+      VerificationUserTemplate({ code }),
     );
   } catch (error) {
     console.log("Error [Register_User]", error);

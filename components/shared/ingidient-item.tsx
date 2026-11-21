@@ -1,6 +1,6 @@
-import { cn } from '@/lib/utils';
-import { CircleCheck } from 'lucide-react';
-import React from 'react';
+import { cn } from "@/lib/utils";
+import { CircleCheck } from "lucide-react";
+import React from "react";
 
 interface Props {
   imageUrl: string;
@@ -20,18 +20,31 @@ export const IngredientItem: React.FC<Props> = ({
   onClick,
 }) => {
   return (
-    <div
-      className={cn(
-        'flex items-center flex-col p-1 rounded-md w-22 text-center relative cursor-pointer shadow-md bg-white',
-        { 'border border-primary': active },
-        className
-      )}
+    <button
+      type="button"
+      aria-pressed={active}
       onClick={onClick}
+      className={cn(
+        "relative flex flex-col items-center rounded-md border border-transparent bg-white p-1 text-center shadow-md",
+        active && "border-primary",
+        className,
+      )}
     >
-      {active && <CircleCheck className='absolute top-2 right-2 text-primary'  />}
-      <img width={110} height={110} src={imageUrl} />
-      <span className='text-xs mb-1'>{name}</span>
-      <span className='font-bold'>{price} ₴</span>
-    </div>
+      {active && (
+        <CircleCheck
+          aria-hidden="true"
+          className="absolute right-2 top-2 text-primary"
+        />
+      )}
+      <img
+        src={imageUrl}
+        alt=""
+        width={110}
+        height={110}
+        className="h-auto w-full max-w-[110px]"
+      />
+      <span className="mb-1 text-xs">{name}</span>
+      <span className="font-bold">{price} ₴</span>
+    </button>
   );
 };

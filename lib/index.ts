@@ -10,3 +10,4 @@ export { getAvailablePizzaSizes } from "./get-available-pizza-sizes";
 export { getPizzaDetails } from "./get-pizza-details";
 
 export { calcTotalPizzaPrice } from "./calc-total-pizza-prices";
+export { calcOrderTotal, VAT_PERCENT, DELIVERY_PRICE } from "./calc-order-total";
