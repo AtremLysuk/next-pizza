@@ -85,6 +85,29 @@ html {
     scrollbar-color: #dbdadd transparent;
   }
 
+  /* Полоса прокрутки видна только при наведении на элемент */
+  .scrollbar-hover {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
+  .scrollbar-hover:hover {
+    scrollbar-color: #dbdadd transparent;
+  }
+
+  .scrollbar-hover::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-hover::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 6px;
+  }
+
+  .scrollbar-hover:hover::-webkit-scrollbar-thumb {
+    background: #dbdadd;
+  }
+
   .scrollbar-thin::-webkit-scrollbar {
     display: block;
     height: 4px;

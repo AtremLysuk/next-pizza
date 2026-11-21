@@ -69,7 +69,7 @@ export const FiltersPanel: React.FC = () => {
           aria-label="Фильтры"
           className={cn(
             "relative max-h-full w-full max-w-md overflow-y-auto rounded-3xl bg-white p-5 shadow-xl sm:max-w-xl sm:p-7",
-            "lg:max-h-[calc(100vh-8rem)] lg:max-w-none lg:p-5 lg:scrollbar-thin",
+            "lg:max-h-[calc(100vh-8rem)] lg:max-w-none lg:p-5 lg:scrollbar-hover",
           )}
           onClick={(event) => event.stopPropagation()}
         >
