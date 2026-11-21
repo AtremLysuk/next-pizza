@@ -6,16 +6,37 @@ import {
   Title,
 } from "@/components/shared";
 import { TopBar } from "@/components/shared/top-bar";
-import { findPizzas, GetSearchParams } from "@/lib/find-pizzas";
+
+import { findPizzas, type GetSearchParams } from "@/lib/find-pizzas";
 import { Suspense } from "react";
+
+type RawSearchParams = Record<string, string | string[] | undefined>;
+
+// В App Router значение query-параметра может быть массивом,
+// если параметр продублирован (?sizes=20&sizes=30).
+// Берём первое значение, чтобы привести данные к ожидаемому GetSearchParams.
+const first = (value: string | string[] | undefined): string | undefined =>
+  Array.isArray(value) ? value[0] : value;
+
+function normalizeParams(raw: RawSearchParams): GetSearchParams {
+  return {
+    query: first(raw.query),
+    sortBy: first(raw.sortBy),
+    sizes: first(raw.sizes),
+    pizzaTypes: first(raw.pizzaTypes),
+    ingredients: first(raw.ingredients),
+    priceFrom: first(raw.priceFrom),
+    priceTo: first(raw.priceTo),
+  };
+}
 
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<GetSearchParams>;
+  searchParams: Promise<RawSearchParams>;
 }) {
-  const resolvedParams = await searchParams;
-  const categories = await findPizzas(resolvedParams);
+  const raw = await searchParams;
+  const categories = await findPizzas(normalizeParams(raw));
 
   return (
     <>
@@ -58,3 +79,4 @@ export default async function Home({
     </>
   );
 }
+
