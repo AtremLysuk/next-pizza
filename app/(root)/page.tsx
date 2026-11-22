@@ -10,6 +10,7 @@ import {
 } from "@/components/shared/filters-panel";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { findPizzas, type GetSearchParams } from "@/lib/find-pizzas";
+import { findStories } from "@/lib/find-stories";
 import { cn } from "@/lib/utils";
 
 type RawSearchParams = Record<string, string | string[] | undefined>;
@@ -38,7 +39,13 @@ export default async function Home({
   searchParams: Promise<RawSearchParams>;
 }) {
   const raw = await searchParams;
-  const categories = await findPizzas(normalizeParams(raw));
+
+  // Пиццы и сторис запрашиваем параллельно, а не друг за другом
+  const [categories, stories] = await Promise.all([
+    findPizzas(normalizeParams(raw)),
+    findStories(),
+  ]);
+
   const visibleCategories = categories.filter(
     (category) => category.products.length > 0,
   );
@@ -51,7 +58,7 @@ export default async function Home({
 
       <TopBar categories={visibleCategories} />
 
-      <Stories />
+      <Stories items={stories} />
 
       <Container className="pb-14">
         <div className="flex flex-col gap-6 lg:flex-row lg:gap-[60px]">
@@ -87,8 +94,8 @@ export default async function Home({
                   className="mb-2 font-extrabold"
                 />
                 <p className="mb-6 max-w-sm text-gray-500">
-                  По выбранным фильтрам товаров нет. Попробуйте изменить
-                  условия или сбросьте фильтры.
+                  По выбранным фильтрам товаров нет. Попробуйте изменить условия
+                  или сбросьте фильтры.
                 </p>
                 {/* Нужна полная перезагрузка: только так сбрасывается состояние фильтров (useFilters читает URL один раз) */}
                 {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}

@@ -57,9 +57,10 @@ export const Categories: React.FC<Props> = ({ items, className }) => {
           onClick={(event) => onClickCategory(event, name)}
           aria-current={categoryActiveId === id ? "true" : undefined}
           className={cn(
-            "flex shrink-0 items-center whitespace-nowrap font-bold h-11 rounded-2xl px-5",
-            categoryActiveId === id &&
-              "bg-white shadow-md shadow-gray-200 text-primary",
+            "flex shrink-0 items-center whitespace-nowrap font-bold h-11 rounded-2xl px-5 transition-colors",
+            categoryActiveId === id
+              ? "bg-white shadow-md shadow-gray-200 text-primary"
+              : "hover:bg-white/70 hover:text-primary",
           )}
         >
           {name}
