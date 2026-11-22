@@ -1,15 +1,15 @@
+import { Suspense } from "react";
+import { Container } from "@/components/shared/container";
+import { Title } from "@/components/shared/title";
+import { Stories } from "@/components/shared/stories";
+import { TopBar } from "@/components/shared/top-bar";
+import { ProductsGroupList } from "@/components/shared/products-group-list";
 import {
-  Container,
   FiltersPanel,
   FiltersPanelSkeleton,
-  ProductsGroupList,
-  Stories,
-  Title,
-} from "@/components/shared";
-import { TopBar } from "@/components/shared/top-bar";
-import { findPizzas, type GetSearchParams } from "@/lib/find-pizzas";
-import { Suspense } from "react";
+} from "@/components/shared/filters-panel";
 import { buttonVariants } from "@/components/ui/button-variants";
+import { findPizzas, type GetSearchParams } from "@/lib/find-pizzas";
 import { cn } from "@/lib/utils";
 
 type RawSearchParams = Record<string, string | string[] | undefined>;
@@ -62,12 +62,13 @@ export default async function Home({
           <div className="min-w-0 flex-1">
             {visibleCategories.length > 0 ? (
               <div className="flex flex-col gap-16">
-                {visibleCategories.map((category) => (
+                {visibleCategories.map((category, index) => (
                   <ProductsGroupList
                     key={category.id}
                     title={category.name}
                     categoryId={category.id}
                     items={category.products}
+                    eagerImages={index === 0}
                   />
                 ))}
               </div>

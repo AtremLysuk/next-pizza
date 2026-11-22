@@ -1,10 +1,11 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import React from 'react';
 import { Plus } from 'lucide-react';
 import { Ingredient } from '@prisma/client';
 import { cn } from '@/lib/utils';
 import { Title } from './title';
-import { buttonVariants } from '../ui/button';
+import { buttonVariants } from '../ui/button-variants';
 
 interface Props {
   id: number;
@@ -13,6 +14,8 @@ interface Props {
   count: number;
   imageUrl: string;
   ingredients: Ingredient[];
+  /** Картинка на первом экране: грузим сразу и с высоким приоритетом (кандидат на LCP) */
+  eager?: boolean;
   className?: string;
 }
 
@@ -22,17 +25,24 @@ export const ProductCard: React.FC<Props> = ({
   price,
   ingredients,
   imageUrl,
+  eager = false,
   className,
 }) => {
   return (
     <div className={cn('h-full', className)}>
       <Link href={`/product/${id}`} scroll={false} className="group flex h-full flex-col">
-        <div className="flex h-[220px] items-center justify-center rounded-lg bg-secondary p-6 md:h-[260px]">
-          <img
-            src={imageUrl}
-            alt=""
-            className="h-full w-auto max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
-          />
+        <div className="h-[220px] rounded-lg bg-secondary p-6 md:h-[260px]">
+          <div className="relative h-full w-full">
+            <Image
+              src={imageUrl}
+              alt=""
+              fill
+              sizes="(min-width: 1024px) 280px, (min-width: 640px) 45vw, 90vw"
+              loading={eager ? 'eager' : 'lazy'}
+              fetchPriority={eager ? 'high' : 'auto'}
+              className="object-contain transition-transform duration-300 group-hover:scale-105"
+            />
+          </div>
         </div>
 
         <Title text={name} size="sm" className="mb-1 mt-3 font-bold" />

@@ -1,7 +1,7 @@
 import {
   orderSuccessTemplate
 } from "@/components/shared/email-templates/pay-order";
-import {sendEmail} from "@/lib";
+import { sendEmail } from "@/lib/send-email";
 import {prisma} from "@/prisma/prisma-client";
 import {OrderStatus} from "@prisma/client";
 import crypto from "crypto";

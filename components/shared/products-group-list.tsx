@@ -14,6 +14,7 @@ interface Props {
   categoryId: number;
   listClassName?: string;
   className?: string;
+  eagerImages?: boolean;
 }
 
 export const ProductsGroupList: React.FC<Props> = ({
@@ -22,6 +23,7 @@ export const ProductsGroupList: React.FC<Props> = ({
   items,
   categoryId,
   listClassName,
+  eagerImages,
 }) => {
   const setActiveCategoryId = useCategoryStore((state) => state.setActiveId);
 
@@ -57,7 +59,7 @@ export const ProductsGroupList: React.FC<Props> = ({
           listClassName,
         )}
       >
-        {items.map((product) => (
+        {items.map((product, index) => (
           <ProductCard
             key={product.id}
             id={product.id}
@@ -66,6 +68,7 @@ export const ProductsGroupList: React.FC<Props> = ({
             count={1}
             ingredients={product.ingredients}
             imageUrl={`/${product.imageUrl}`}
+            eager={eagerImages && index < 3}
           />
         ))}
       </div>

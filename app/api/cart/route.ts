@@ -1,7 +1,7 @@
 import { prisma } from '@/prisma/prisma-client';
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { updateCartTotalAmount } from '@/lib';
+import { updateCartTotalAmount } from "@/lib/update-cart-totalAmount";
 import { findOrCreateCart } from '@/lib/find-or-create-cart';
 import { CreateCartItemValues } from '@/services/dto/cart.dto';
 import crypto from 'crypto';
