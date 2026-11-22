@@ -1,12 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Api } from "@/services/api-clien";
 import { IStory } from "@/services/stories";
 import React, { useEffect, useState } from "react";
-import { Container } from "./container";
-import { X } from "lucide-react";
+import Image from "next/image";
 import dynamic from "next/dynamic";
+import { X } from "lucide-react";
+import { Container } from "./container";
 
 // Плеер историй грузится отдельным чанком только при первом открытии истории
 const ReactInstaStories = dynamic(() => import("react-insta-stories"), {
@@ -15,24 +15,18 @@ const ReactInstaStories = dynamic(() => import("react-insta-stories"), {
 });
 
 interface Props {
+  items: IStory[];
   className?: string;
 }
 
 const CARD_SIZE = "w-[140px] h-[175px] md:w-[200px] md:h-[250px]";
 
-export const Stories: React.FC<Props> = ({ className }) => {
-  const [stories, setStories] = useState<IStory[]>([]);
+// Сколько первых превью грузить сразу и с высоким приоритетом (видны на первом экране)
+const EAGER_COUNT = 2;
+
+export const Stories: React.FC<Props> = ({ items, className }) => {
   const [open, setOpen] = useState(false);
   const [selectedStory, setSelectedStory] = useState<IStory>();
-
-  useEffect(() => {
-    async function fetchStories() {
-      const data = await Api.stories.getAll();
-      setStories(data);
-    }
-
-    fetchStories();
-  }, []);
 
   // Пока история открыта: блокируем прокрутку страницы и закрываем по Esc
   useEffect(() => {
@@ -59,40 +53,37 @@ export const Stories: React.FC<Props> = ({ className }) => {
     }
   };
 
+  if (items.length === 0) return null;
+
   return (
     <Container className={cn("my-6 md:my-10", className)}>
       <div className="flex gap-2 overflow-x-auto scrollbar-none [@media(hover:hover)_and_(pointer:fine)]:scrollbar-thin p-1 [@media(hover:hover)_and_(pointer:fine)]:pb-3">
-        {stories.length === 0 &&
-          [...Array(6)].map((_, index) => (
-            <div
-              key={index}
+        {items.map((story, index) => {
+          const eager = index < EAGER_COUNT;
+
+          return (
+            <button
+              key={story.id}
+              type="button"
+              aria-label={`Открыть историю ${index + 1}`}
               className={cn(
                 CARD_SIZE,
-                "shrink-0 rounded-xl bg-gray-200 animate-pulse",
+                "group relative shrink-0 overflow-hidden rounded-xl transition-transform duration-300 md:hover:scale-[1.03]",
               )}
-            />
-          ))}
-
-        {stories.map((story, index) => (
-          <button
-            key={story.id}
-            type="button"
-            aria-label={`Открыть историю ${index + 1}`}
-            className={cn(
-              CARD_SIZE,
-              "group relative shrink-0 overflow-hidden rounded-xl transition-transform duration-300 md:hover:scale-[1.03]",
-            )}
-            onClick={() => onClickStory(story)}
-          >
-            <img
-              src={story.previewImageUrl}
-              alt=""
-              width={200}
-              height={250}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-            />
-          </button>
-        ))}
+              onClick={() => onClickStory(story)}
+            >
+              <Image
+                src={story.previewImageUrl}
+                alt=""
+                fill
+                sizes="(min-width: 768px) 200px, 140px"
+                loading={eager ? "eager" : "lazy"}
+                fetchPriority={eager ? "high" : "auto"}
+                className="object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            </button>
+          );
+        })}
       </div>
 
       {open && (
