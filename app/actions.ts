@@ -1,7 +1,8 @@
 "use server";
 
 import { TCheckoutFormValues } from "@/components/shared/checkout/checkout-form-schema";
-import { sendEmail, calcOrderTotal, calcCartItemTotalPrice } from "@/lib";
+import { calcOrderTotal, calcCartItemTotalPrice } from "@/lib";
+import { sendEmail } from "@/lib/send-email";
 import { getUserSession } from "@/lib/get-user-session";
 import { prisma } from "@/prisma/prisma-client";
 import { OrderStatus, Prisma } from "@prisma/client";

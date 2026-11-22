@@ -6,7 +6,13 @@ import { IStory } from "@/services/stories";
 import React, { useEffect, useState } from "react";
 import { Container } from "./container";
 import { X } from "lucide-react";
-import ReactInstaStories from "react-insta-stories";
+import dynamic from "next/dynamic";
+
+// Плеер историй грузится отдельным чанком только при первом открытии истории
+const ReactInstaStories = dynamic(() => import("react-insta-stories"), {
+  ssr: false,
+  loading: () => <div className="h-full w-full animate-pulse bg-gray-800" />,
+});
 
 interface Props {
   className?: string;
@@ -55,7 +61,7 @@ export const Stories: React.FC<Props> = ({ className }) => {
 
   return (
     <Container className={cn("my-6 md:my-10", className)}>
-      <div className="flex gap-2 overflow-x-auto scrollbar-none md:scrollbar-thin p-1 md:pb-3">
+      <div className="flex gap-2 overflow-x-auto scrollbar-none [@media(hover:hover)_and_(pointer:fine)]:scrollbar-thin p-1 [@media(hover:hover)_and_(pointer:fine)]:pb-3">
         {stories.length === 0 &&
           [...Array(6)].map((_, index) => (
             <div
