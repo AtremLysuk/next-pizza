@@ -42,3 +42,6 @@ next-env.d.ts
 
 #other
 .idea/
+
+# Исполняемые файлы (CLI-утилиты и т.п.)
+*.exe
