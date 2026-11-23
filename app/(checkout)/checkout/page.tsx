@@ -19,8 +19,6 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Api } from "@/services/api-clien";
 
-export const dynamic = "force-dynamic";
-
 export default function CheckoutPage() {
   const [submiting, setSubmiting] = useState(false);
 

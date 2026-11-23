@@ -1,10 +1,11 @@
-import {AuthOptions} from "next-auth";
+import { AuthOptions } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import {prisma} from "@/prisma/prisma-client";
-import {compare, hashSync} from "bcrypt";
-import {UserRole} from "@prisma/client";
+import { prisma } from "@/prisma/prisma-client";
+import { compare, hashSync } from "bcrypt";
+import { UserRole } from "@prisma/client";
+import { randomUUID } from "crypto";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -28,27 +29,29 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: {label: "Email", type: "text"},
-        password: {label: "password", type: "password"},
+        email: { label: "Email", type: "text" },
+        password: { label: "password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials) {
           return null;
         }
 
-        const values = {
-          email: credentials.email,
-        };
-
         const findUser = await prisma.user.findFirst({
-          where: values,
+          where: { email: credentials.email },
         });
 
         if (!findUser) return null;
 
+        // Защита старых OAuth-аккаунтов: раньше при входе через GitHub/Google
+        // им ставился пароль, равный публичному id у провайдера. Такой «пароль» не принимаем
+        if (findUser.providerId && credentials.password === findUser.providerId) {
+          return null;
+        }
+
         const isPasswordValid = await compare(
           credentials.password,
-          findUser.password
+          findUser.password,
         );
 
         if (!isPasswordValid) return null;
@@ -76,13 +79,14 @@ export const authOptions: AuthOptions = {
     signIn: "/auth-error",
     error: "/auth-error",
   },
-  callbacks: {
-    async signIn({user, account}) {
-      try {
 
-        if(!account) {
-          return false
+  callbacks: {
+    async signIn({ user, account }) {
+      try {
+        if (!account) {
+          return false;
         }
+
         if (account.provider === "credentials") {
           return true;
         }
@@ -95,10 +99,10 @@ export const authOptions: AuthOptions = {
           where: {
             OR: [
               {
-                provider: account.provider ?? 'credentials',
+                provider: account.provider ?? "credentials",
                 providerId: account.providerAccountId,
               },
-              {email: user.email},
+              { email: user.email },
             ],
           },
         });
@@ -121,7 +125,8 @@ export const authOptions: AuthOptions = {
           data: {
             email: user.email,
             fullName: user.name || "user #" + user.id,
-            password: hashSync(user.id.toString(), 10),
+            // Случайный пароль, который никто не знает: такой пользователь входит только через провайдера
+            password: hashSync(randomUUID(), 10),
             verified: new Date(),
             provider: account.provider,
             providerId: account.providerAccountId ?? null,
@@ -130,13 +135,14 @@ export const authOptions: AuthOptions = {
 
         return true;
       } catch (error) {
-        console.log("Rrror [SIGNIN]", error);
+        console.error("Error [SIGNIN]", error);
         return false;
       }
     },
 
-    async jwt({token}) {
+    async jwt({ token }) {
       if (!token.email) return token;
+
       const findUser = await prisma.user.findFirst({
         where: {
           email: token.email,
@@ -152,7 +158,8 @@ export const authOptions: AuthOptions = {
 
       return token;
     },
-    session({session, token}) {
+
+    session({ session, token }) {
       if (session?.user) {
         session.user.id = token.id;
         session.user.role = token.role;
