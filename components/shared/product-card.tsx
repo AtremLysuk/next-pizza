@@ -1,11 +1,11 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import React from 'react';
-import { Plus } from 'lucide-react';
-import { Ingredient } from '@prisma/client';
-import { cn } from '@/lib/utils';
-import { Title } from './title';
-import { buttonVariants } from '../ui/button-variants';
+import Link from "next/link";
+import Image from "next/image";
+import React from "react";
+import { Plus } from "lucide-react";
+import { Ingredient } from "@prisma/client";
+import { cn } from "@/lib/utils";
+import { Title } from "./title";
+import { buttonVariants } from "../ui/button-variants";
 
 interface Props {
   id: number;
@@ -29,17 +29,21 @@ export const ProductCard: React.FC<Props> = ({
   className,
 }) => {
   return (
-    <div className={cn('h-full', className)}>
-      <Link href={`/product/${id}`} scroll={false} className="group flex h-full flex-col">
-        <div className="h-[220px] rounded-lg bg-secondary p-6 md:h-[260px]">
-          <div className="relative h-full w-full">
+    <div className={cn("h-full", className)}>
+      <Link
+        href={`/product/${id}`}
+        scroll={false}
+        className="group flex h-full flex-col"
+      >
+        <div className="flex h-[220px] items-center justify-center rounded-lg bg-secondary p-6 md:h-[260px]">
+          <div className="relative aspect-square h-full">
             <Image
               src={imageUrl}
               alt=""
               fill
-              sizes="(min-width: 1024px) 280px, (min-width: 640px) 45vw, 90vw"
-              loading={eager ? 'eager' : 'lazy'}
-              fetchPriority={eager ? 'high' : 'auto'}
+              sizes="(min-width: 768px) 212px, 172px"
+              loading={eager ? "eager" : "lazy"}
+              fetchPriority={eager ? "high" : "auto"}
               className="object-contain transition-transform duration-300 group-hover:scale-105"
             />
           </div>
@@ -48,7 +52,7 @@ export const ProductCard: React.FC<Props> = ({
         <Title text={name} size="sm" className="mb-1 mt-3 font-bold" />
 
         <p className="line-clamp-3 text-sm text-gray-500">
-          {ingredients.map((ingredient) => ingredient.name).join(', ')}
+          {ingredients.map((ingredient) => ingredient.name).join(", ")}
         </p>
 
         <div className="mt-auto flex items-center justify-between pt-4">
@@ -58,8 +62,8 @@ export const ProductCard: React.FC<Props> = ({
 
           <span
             className={cn(
-              buttonVariants({ variant: 'secondary' }),
-              'text-base font-bold transition-transform duration-300 group-hover:scale-105'
+              buttonVariants({ variant: "secondary" }),
+              "text-base font-bold transition-transform duration-300 group-hover:scale-105",
             )}
           >
             <Plus size={20} className="mr-1" aria-hidden="true" />
