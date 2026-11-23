@@ -1,56 +1,32 @@
-"use client";
-
-import { useIntersection } from "react-use";
-import React, { useEffect, useRef } from "react";
-import { Title } from "./title";
-import { useCategoryStore } from "@/store/category";
-import { ProductCard } from "./product-card";
+import React from "react";
 import { cn } from "@/lib/utils";
 import { ProductWithRelations } from "@/@types/prisma";
+import { Title } from "./title";
+import { ProductCard } from "./product-card";
+import { CategorySection } from "./category-section";
 
 interface Props {
   title: string;
   items: ProductWithRelations[];
   categoryId: number;
+  /** Первая группа на странице: первые карточки грузим сразу */
+  eagerImages?: boolean;
   listClassName?: string;
   className?: string;
-  eagerImages?: boolean;
 }
 
+// Серверный компонент: карточки рендерятся на сервере и не гидратируются.
+// Отслеживание прокрутки — в клиентской обёртке CategorySection
 export const ProductsGroupList: React.FC<Props> = ({
-  className,
   title,
   items,
   categoryId,
+  eagerImages = false,
   listClassName,
-  eagerImages,
+  className,
 }) => {
-  const setActiveCategoryId = useCategoryStore((state) => state.setActiveId);
-
-  const intersectionRef = useRef<HTMLDivElement>(null);
-
-  // Раздел активен, когда пересекает узкую полосу на 20% от верха экрана
-  // (сразу под липкой панелью категорий). Высота раздела при этом не важна
-  const intersection = useIntersection(
-    intersectionRef as React.RefObject<HTMLElement>,
-    {
-      rootMargin: "-20% 0px -79% 0px",
-      threshold: 0,
-    },
-  );
-
-  useEffect(() => {
-    if (intersection?.isIntersecting) {
-      setActiveCategoryId(categoryId);
-    }
-  }, [categoryId, intersection?.isIntersecting, setActiveCategoryId]);
-
   return (
-    <div
-      id={title}
-      ref={intersectionRef}
-      className={cn("scroll-mt-40 md:scroll-mt-28", className)}
-    >
+    <CategorySection id={title} categoryId={categoryId} className={className}>
       <Title text={title} size="lg" className="mb-5 font-extrabold" />
 
       <div
@@ -72,6 +48,6 @@ export const ProductsGroupList: React.FC<Props> = ({
           />
         ))}
       </div>
-    </div>
+    </CategorySection>
   );
 };
